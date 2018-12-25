@@ -1,0 +1,45 @@
+<RCC>
+    <qresource prefix="/source">
+        <file>icons/favicon.png</file>
+        <file>icons/algorithm_ic.png</file>
+        <file>icons/app_info_ic.png</file>
+        <file>icons/app_quit_ic.png</file>
+        <file>icons/app_shortcuts_ic.png</file>
+        <file>icons/bg_clr_ic.png</file>
+        <file>icons/calc_ic.png</file>
+        <file>icons/chart_build_ic.png</file>
+        <file>icons/chart_it.png</file>
+        <file>icons/chart_points_ic.png</file>
+        <file>icons/chart_seris_ic.png</file>
+        <file>icons/file_A_ic.png</file>
+        <file>icons/file_add_ic.png</file>
+        <file>icons/file_B_ic.png</file>
+        <file>icons/file_close_ic.png</file>
+        <file>icons/file_L_ic.png</file>
+        <file>icons/file_R_ic.png</file>
+        <file>icons/github_ic.png</file>
+        <file>icons/table_A_ic.png</file>
+        <file>icons/table_B_ic.png</file>
+        <file>icons/table_L_ic.png</file>
+        <file>icons/table_R_ic.png</file>
+        <file>icons/view_FullScreen_ic.png</file>
+        <file>icons/FM_TransBG/FM_1_TransBG_ic.png</file>
+        <file>icons/FM_TransBG/FM_2_TransBG_ic.png</file>
+        <file>icons/FM_TransBG/FM_3_TransBG_ic.png</file>
+        <file>icons/FM_TransBG/FM_4_TransBG_ic.png</file>
+        <file>icons/FM_TransBG/FM_5_TransBG_ic.png</file>
+        <file>icons/FM_TransBG/FM_6_TransBG_ic.png</file>
+        <file>icons/FM_TransBG/FM_7_TransBG_ic.png</file>
+        <file>icons/FM_TransBG/FM_8_TransBG_ic.png</file>
+        <file>icons/FM_TransBG/FM_9_TransBG_ic.png</file>
+        <file>icons/FM_WhiteBG/FM_1_WhiteBG_ic.png</file>
+        <file>icons/FM_WhiteBG/FM_2_WhiteBG_ic.png</file>
+        <file>icons/FM_WhiteBG/FM_3_WhiteBG_ic.png</file>
+        <file>icons/FM_WhiteBG/FM_4_WhiteBG_ic.png</file>
+        <file>icons/FM_WhiteBG/FM_5_WhiteBG_ic.png</file>
+        <file>icons/FM_WhiteBG/FM_6_WhiteBG_ic.png</file>
+        <file>icons/FM_WhiteBG/FM_7_WhiteBG_ic.png</file>
+        <file>icons/FM_WhiteBG/FM_8_WhiteBG_ic.png</file>
+        <file>icons/FM_WhiteBG/FM_9_WhiteBG_ic.png</file>
+    </qresource>
+</RCC>

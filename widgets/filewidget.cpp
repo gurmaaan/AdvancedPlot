@@ -17,3 +17,13 @@ void FileWidget::on_file_btn_clicked()
 {
 
 }
+
+CSVFile FileWidget::csv() const
+{
+    return csv_;
+}
+
+void FileWidget::setCsv(const CSVFile &csv)
+{
+    csv_ = csv;
+}

@@ -28,13 +28,15 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     widgets/qcustomplot.cpp \
-    widgets/filewidget.cpp
+    widgets/filewidget.cpp \
+    csvfile.cpp
 
 HEADERS += \
         mainwindow.h \
     widgets/qcustomplot.h \
     widgets/filewidget.h \
-    static.h
+    static.h \
+    csvfile.h
 
 FORMS += \
         mainwindow.ui \

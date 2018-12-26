@@ -26,21 +26,25 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp \
-    widgets/qcustomplot.cpp \
-    widgets/filewidget.cpp \
-    csvfile.cpp
+        dialogs/mainwindow.cpp \
+        dialogs/bulkdialog.cpp \
+        widgets/qcustomplot.cpp \
+        widgets/filewidget.cpp \
+        csvfile.cpp
 
 HEADERS += \
-        mainwindow.h \
-    widgets/qcustomplot.h \
-    widgets/filewidget.h \
-    static.h \
-    csvfile.h
+        static.h \
+        dialogs/mainwindow.h \
+        dialogs/bulkdialog.h \
+        widgets/qcustomplot.h \
+        widgets/filewidget.h \
+        csvfile.h
+
 
 FORMS += \
         mainwindow.ui \
-    widgets/filewidget.ui
+        dialogs/bulkdialog.ui \
+        widgets/filewidget.ui
 
 win32: RC_FILE = iconsource.rc
 
@@ -50,4 +54,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    src.qrc
+        src.qrc

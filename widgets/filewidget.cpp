@@ -6,6 +6,7 @@ FileWidget::FileWidget(QWidget *parent) :
     ui(new Ui::FileWidget)
 {
     ui->setupUi(this);
+    parsingState_ = false;
 }
 
 FileWidget::~FileWidget()
@@ -27,7 +28,20 @@ void FileWidget::on_file_btn_clicked()
     setupSB(ui->descrCnt_sb, ccnt);
     setupSB(ui->objctsCnt_sb, rcnt);
 
-    emit parsingDone(csvFile.model());
+    emit modelChanged(csvFile.model());
+
+    setParsingState(true);
+}
+
+bool FileWidget::parsingState() const
+{
+    return parsingState_;
+}
+
+void FileWidget::setParsingState(bool parsingState)
+{
+    parsingState_ = parsingState;
+    emit parsingDone(parsingState);
 }
 
 QString FileWidget::requiredPath(QDir currentDir, const QString &redirect, const QStandardPaths::StandardLocation &loc)
@@ -68,4 +82,9 @@ CSVFile FileWidget::csv() const
 void FileWidget::setCsv(const CSVFile &csv)
 {
     csv_ = csv;
+}
+
+void FileWidget::setBtnVisible(bool status)
+{
+    ui->file_btn->setVisible(status);
 }

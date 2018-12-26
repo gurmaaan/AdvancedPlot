@@ -23,8 +23,15 @@ public:
     CSVFile csv() const;
     void setCsv(const CSVFile &csv);
 
+    bool parsingState() const;
+    void setParsingState(bool parsingState);
+
+public slots:
+    void setBtnVisible(bool status);
+
 signals:
-    void parsingDone(QStandardItemModel *model);
+    void modelChanged(QStandardItemModel *model);
+    void parsingDone(bool status);
 
 private slots:
     void on_file_btn_clicked();
@@ -32,6 +39,7 @@ private slots:
 private:
     Ui::FileWidget *ui;
     CSVFile csv_;
+    bool parsingState_;
     QString requiredPath(QDir currentDir, const QString &redirect, const QStandardPaths::StandardLocation &loc);
     void setupSB(QSpinBox *sb, int max = 0);
 };

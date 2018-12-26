@@ -3,7 +3,14 @@
 
 #include <QObject>
 #include <QMap>
+#include <QFileInfo>
+#include <QChar>
+#include <QDebug>
 #include <QStandardItemModel>
+#include <QStandardItem>
+#include <QTextStream>
+
+#include "static.h"
 
 class CSVFile : public QObject
 {
@@ -43,6 +50,12 @@ private:
 
     void loadFromFile(QString path);
     bool checkPath(QString path);
+    bool extensionValid(QString path);
+    bool fileExists(QString path);
+
+    void makeHeader(QStandardItem *item, Qt::Orientation orient);
+    void setAllTextData(QStandardItem* item);
+    QChar detectDelim(QString fileContentStr);
 };
 
 #endif // CSVFILE_H

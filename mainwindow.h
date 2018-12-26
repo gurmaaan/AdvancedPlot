@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QFileDialog>
+#include "csvfile.h"
 #include <widgets/qcustomplot.h>
 
 namespace Ui {
@@ -20,6 +22,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    void connectAll();
 };
 
 #endif // MAINWINDOW_H

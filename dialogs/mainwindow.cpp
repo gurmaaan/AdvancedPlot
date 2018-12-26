@@ -24,6 +24,14 @@ void MainWindow::runCgen(bool status)
 {
     bool allCompleted = status && aW_->parsingState() && bW_->parsingState();
     cW_->setEnabled(allCompleted);
+    int curInd = 0;
+    if( aW_->parsingState() && (!bW_->parsingState()) )
+        curInd = 0;
+    else if(bW_->parsingState() && (!aW_->parsingState()) )
+        curInd = 1;
+    else if(allCompleted)
+        curInd = 2;
+    ui->tabWidget->setCurrentIndex(curInd);
 }
 
 void MainWindow::connectAll()

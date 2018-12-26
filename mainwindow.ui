@@ -17,12 +17,15 @@
    <iconset resource="src.qrc">
     <normaloff>:/icons/favicon.png</normaloff>:/icons/favicon.png</iconset>
   </property>
+  <property name="documentMode">
+   <bool>true</bool>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <property name="documentMode">
        <bool>false</bool>
@@ -65,7 +68,7 @@
       </widget>
       <widget class="QWidget" name="plot_tab">
        <attribute name="title">
-        <string>Plot</string>
+        <string>График</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>

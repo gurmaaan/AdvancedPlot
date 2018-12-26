@@ -40,7 +40,6 @@ HEADERS += \
         widgets/filewidget.h \
         csvfile.h
 
-
 FORMS += \
         mainwindow.ui \
         dialogs/bulkdialog.ui \

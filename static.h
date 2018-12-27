@@ -4,4 +4,7 @@
     #define FILE_TYPE "Comma Separatred table *.csv"
     #define DATA_LOCATION "_AdvancedPlot/data"
 
+    #define ACT_NAME "action_rule_"
+    #define BTN_NAME "commandLinkButton_"
+
 #endif // STATIC_H

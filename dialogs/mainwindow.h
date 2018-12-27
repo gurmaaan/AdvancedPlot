@@ -6,6 +6,7 @@
 #include "csvfile.h"
 #include <widgets/qcustomplot.h>
 #include "widgets/filewidget.h"
+#include "dialogs/bulkdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +24,8 @@ public slots:
     void runCgen(bool status);
 
 private slots:
+
+    void on_save_btn_clicked();
 
 private:
     Ui::MainWindow *ui;

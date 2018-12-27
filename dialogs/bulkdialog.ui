@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>554</width>
-    <height>263</height>
+    <width>700</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,18 +16,21 @@
   <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
-  <property name="modal">
-   <bool>true</bool>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
     <widget class="QLabel" name="tittle_lbl">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="font">
       <font>
-       <family>Calibri</family>
+       <family>Calibri Light</family>
        <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="text">
@@ -36,11 +39,14 @@
     </widget>
    </item>
    <item>
-    <layout class="QGridLayout" name="gridLayout">
+    <layout class="QGridLayout" name="gridLayout" columnstretch="1,1,1">
      <item row="0" column="0">
       <widget class="QGroupBox" name="descriptors_gb">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
+       </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
        </property>
        <property name="title">
         <string>Дескрипторы:</string>
@@ -66,7 +72,7 @@
      <item row="0" column="1">
       <widget class="QGroupBox" name="duplicates_gb">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="title">
         <string>Дубликаты (имен объектов):</string>
@@ -81,6 +87,9 @@
         </item>
         <item>
          <widget class="QRadioButton" name="duplicates_yes_rb">
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
           <property name="text">
            <string>Найдены</string>
           </property>
@@ -92,7 +101,10 @@
      <item row="0" column="2">
       <widget class="QGroupBox" name="filesValid_gb">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
+       </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
        </property>
        <property name="title">
         <string>Оба файла не пустые:</string>
@@ -271,7 +283,7 @@
   <action name="action_rule_3">
    <property name="icon">
     <iconset resource="../src.qrc">
-     <normaloff>:/bulc/icons/FM_TransBG/FM_2_TransBG_ic.png</normaloff>:/bulc/icons/FM_TransBG/FM_2_TransBG_ic.png</iconset>
+     <normaloff>:/bulc/icons/FM_TransBG/FM_3_TransBG_ic.png</normaloff>:/bulc/icons/FM_TransBG/FM_3_TransBG_ic.png</iconset>
    </property>
    <property name="text">
     <string>3. (A ∪ B) \ (A ∩ B)</string>
@@ -286,7 +298,7 @@
   <action name="action_rule_4">
    <property name="icon">
     <iconset resource="../src.qrc">
-     <normaloff>:/bulc/icons/FM_TransBG/FM_2_TransBG_ic.png</normaloff>:/bulc/icons/FM_TransBG/FM_2_TransBG_ic.png</iconset>
+     <normaloff>:/bulc/icons/FM_TransBG/FM_4_TransBG_ic.png</normaloff>:/bulc/icons/FM_TransBG/FM_4_TransBG_ic.png</iconset>
    </property>
    <property name="text">
     <string>4. (A ⊂ B)</string>
@@ -301,7 +313,7 @@
   <action name="action_rule_5">
    <property name="icon">
     <iconset resource="../src.qrc">
-     <normaloff>:/bulc/icons/FM_TransBG/FM_2_TransBG_ic.png</normaloff>:/bulc/icons/FM_TransBG/FM_2_TransBG_ic.png</iconset>
+     <normaloff>:/bulc/icons/FM_TransBG/FM_5_TransBG_ic.png</normaloff>:/bulc/icons/FM_TransBG/FM_5_TransBG_ic.png</iconset>
    </property>
    <property name="text">
     <string>5. (A ∩ B)</string>
@@ -316,7 +328,7 @@
   <action name="action_rule_6">
    <property name="icon">
     <iconset resource="../src.qrc">
-     <normaloff>:/bulc/icons/FM_TransBG/FM_2_TransBG_ic.png</normaloff>:/bulc/icons/FM_TransBG/FM_2_TransBG_ic.png</iconset>
+     <normaloff>:/bulc/icons/FM_TransBG/FM_6_TransBG_ic.png</normaloff>:/bulc/icons/FM_TransBG/FM_6_TransBG_ic.png</iconset>
    </property>
    <property name="text">
     <string>6. A \ (A ⊂ B)</string>
@@ -331,7 +343,7 @@
   <action name="action_rule_7">
    <property name="icon">
     <iconset resource="../src.qrc">
-     <normaloff>:/bulc/icons/FM_TransBG/FM_2_TransBG_ic.png</normaloff>:/bulc/icons/FM_TransBG/FM_2_TransBG_ic.png</iconset>
+     <normaloff>:/bulc/icons/FM_TransBG/FM_7_TransBG_ic.png</normaloff>:/bulc/icons/FM_TransBG/FM_7_TransBG_ic.png</iconset>
    </property>
    <property name="text">
     <string>7. A ∪ (B ⊂ A)</string>
@@ -346,7 +358,7 @@
   <action name="action_rule_8">
    <property name="icon">
     <iconset resource="../src.qrc">
-     <normaloff>:/bulc/icons/FM_TransBG/FM_2_TransBG_ic.png</normaloff>:/bulc/icons/FM_TransBG/FM_2_TransBG_ic.png</iconset>
+     <normaloff>:/bulc/icons/FM_TransBG/FM_8_TransBG_ic.png</normaloff>:/bulc/icons/FM_TransBG/FM_8_TransBG_ic.png</iconset>
    </property>
    <property name="text">
     <string>8. A</string>
@@ -361,7 +373,7 @@
   <action name="action_rule_9">
    <property name="icon">
     <iconset resource="../src.qrc">
-     <normaloff>:/bulc/icons/FM_TransBG/FM_2_TransBG_ic.png</normaloff>:/bulc/icons/FM_TransBG/FM_2_TransBG_ic.png</iconset>
+     <normaloff>:/bulc/icons/FM_TransBG/FM_9_TransBG_ic.png</normaloff>:/bulc/icons/FM_TransBG/FM_9_TransBG_ic.png</iconset>
    </property>
    <property name="text">
     <string>9. A + B</string>
@@ -385,8 +397,8 @@
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>105</x>
-     <y>48</y>
+     <x>115</x>
+     <y>160</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -401,8 +413,8 @@
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>306</x>
-     <y>48</y>
+     <x>359</x>
+     <y>160</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -417,8 +429,8 @@
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>506</x>
-     <y>48</y>
+     <x>543</x>
+     <y>160</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -433,8 +445,8 @@
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>105</x>
-     <y>133</y>
+     <x>115</x>
+     <y>206</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -449,8 +461,8 @@
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>306</x>
-     <y>133</y>
+     <x>359</x>
+     <y>206</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -465,8 +477,8 @@
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>506</x>
-     <y>133</y>
+     <x>543</x>
+     <y>206</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>

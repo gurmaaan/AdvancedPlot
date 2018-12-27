@@ -6,6 +6,14 @@ BulkDialog::BulkDialog(QWidget *parent) :
     ui(new Ui::BulkDialog)
 {
     ui->setupUi(this);
+    copyActionsUIToBtns();
+
+    setWindowFlag(Qt::WindowContextHelpButtonHint, false);
+    setWindowFlag(Qt::WindowMinMaxButtonsHint);
+
+    activeAct_.resize(9);
+    activeAct_.fill(false, 0, 8);
+    actionsActivating(activeAct_);
 }
 
 BulkDialog::~BulkDialog()
@@ -56,4 +64,138 @@ void BulkDialog::on_action_rule_8_triggered()
 void BulkDialog::on_action_rule_9_triggered()
 {
 
+}
+
+void BulkDialog::copyActionsUIToBtns()
+{
+    for(int i = 1; i <= 9; i++)
+    {
+        QString actionName = ACT_NAME + QString::number(i);
+        QString btnName = BTN_NAME + QString::number(i);
+        QAction *act = findChild<QAction*>(actionName);
+        QCommandLinkButton *cmdBtn = this->findChild<QCommandLinkButton*>(btnName);
+        cmdBtn->setIcon(act->icon());
+        cmdBtn->setText(act->text());
+        cmdBtn->setDescription(act->toolTip());
+    }
+}
+
+void BulkDialog::setFilesNotEmpty(bool filesNotEmpty)
+{
+    filesNotEmpty_ = filesNotEmpty;
+    ui->filesValid_yes_rb->setChecked(filesNotEmpty);
+    ui->filesValid_no_rb->setChecked(!ui->filesValid_yes_rb->isChecked());
+}
+
+bool BulkDialog::compareDescriptors(CSVFile aF, CSVFile bF)
+{
+    QStringList aDescrList = aF.descriptorsNames();
+    QStringList bDescrList = bF.descriptorsNames();
+
+    bool descrEqual = true;
+    if(aDescrList.count() == bDescrList.count())
+    {
+        for(int i = 0; i < aDescrList.count(); i++)
+        {
+
+            if( aDescrList.at(i) == bDescrList.at(i) )
+            {
+                continue;
+            }
+            else {
+                descrEqual = false;
+                break;
+            }
+        }
+    } else
+        descrEqual = false;
+    return  descrEqual;
+}
+
+QStringList BulkDialog::findDuplicatedObjectNames(CSVFile aF, CSVFile bF)
+{
+    QStringList duplicatesList;
+    QStringList aObjectsNames = aF.objects().keys();
+    QStringList bObjectsNames = bF.objects().keys();
+    for(int i = 0; i < aObjectsNames.count(); i++)
+    {
+        for(int j = 0; j < bObjectsNames.count(); j++)
+        {
+            QString aOI = aObjectsNames.at(i);
+            if( aOI == bObjectsNames.at(j))
+            {
+                duplicatesList << aOI;
+            }
+        }
+    }
+
+    return duplicatesList;
+}
+
+bool BulkDialog::checkFIlesNotEmpty(CSVFile aF, CSVFile bF)
+{
+    bool notEmpty = !((aF.model()->rowCount() == 0) || (bF.model()->rowCount() == 0));
+    return notEmpty;
+}
+
+void BulkDialog::actionsActivating(const QBitArray &activeAct)
+{
+    for(int i = 1; i <= 9; i++)
+    {
+        QString btnName = BTN_NAME + QString::number(i);
+        QCommandLinkButton *cmdBtn = this->findChild<QCommandLinkButton*>(btnName);
+        cmdBtn->setEnabled(activeAct.at(i-1));
+    }
+}
+
+QStringList BulkDialog::duplicatedNames() const
+{
+    return duplicatedNames_;
+}
+
+void BulkDialog::setDuplicatedNames(const QStringList &duplicatedNames)
+{
+    duplicatedNames_ = duplicatedNames;
+}
+
+void BulkDialog::processFiles(const CSVFile &aF, const CSVFile &bF)
+{
+    setFileA(aF);
+    setFileB(bF);
+    setDescriptorsIsValid( compareDescriptors(aF, bF) );
+    QStringList duplicatedObjectsNames = findDuplicatedObjectNames(aF, bF);
+    setDuplicatedNames(duplicatedObjectsNames);
+    qDebug() << duplicatedObjectsNames;
+    bool dup = (duplicatedObjectsNames.count() == 0);
+    setDuplicatesFound(!dup);
+    setFilesNotEmpty(checkFIlesNotEmpty(aF, bF));
+}
+
+void BulkDialog::setDuplicatesFound(bool duplicatesFound)
+{
+    duplicatesFound_ = duplicatesFound;
+    ui->duplicates_yes_rb->setChecked(duplicatesFound);
+    ui->duplicates_no_rb->setChecked(!ui->duplicates_yes_rb->isChecked());
+
+    activeAct_.fill(duplicatesFound, 0, 6);
+    activeAct_.fill(!duplicatesFound, 7, 8);
+
+    actionsActivating(activeAct_);
+}
+
+void BulkDialog::setDescriptorsIsValid(bool descriptorsIsValid)
+{
+    descriptorsIsValid_ = descriptorsIsValid;
+    ui->descriptors_yes_rb->setChecked(descriptorsIsValid);
+    ui->descriptors_no_rb->setChecked(!ui->descriptors_yes_rb->isChecked());
+}
+
+void BulkDialog::setFileB(const CSVFile &bF)
+{
+    fileB_ = bF;
+}
+
+void BulkDialog::setFileA(const CSVFile &aF)
+{
+    fileA_ = aF;
 }

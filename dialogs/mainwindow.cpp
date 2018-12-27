@@ -24,6 +24,7 @@ void MainWindow::runCgen(bool status)
 {
     bool allCompleted = status && aW_->parsingState() && bW_->parsingState();
     cW_->setEnabled(allCompleted);
+    ui->save_btn->setEnabled(allCompleted);
     int curInd = 0;
     if( aW_->parsingState() && (!bW_->parsingState()) )
         curInd = 0;
@@ -32,6 +33,13 @@ void MainWindow::runCgen(bool status)
     else if(allCompleted)
         curInd = 2;
     ui->tabWidget->setCurrentIndex(curInd);
+
+    if(allCompleted)
+    {
+        BulkDialog *bulk = new BulkDialog;
+        bulk->show();
+        bulk->processFiles(aW_->csv(), bW_->csv());
+    }
 }
 
 void MainWindow::connectAll()
@@ -54,4 +62,10 @@ void MainWindow::setupFileWidgets()
     cW_->setTitle("Файл С");
     cW_->setEnabled(false);
     cW_->setBtnVisible(false);
+}
+
+void MainWindow::on_save_btn_clicked()
+{
+//    BulkDialog *bulk = new BulkDialog(this);
+//    bulk->show();
 }

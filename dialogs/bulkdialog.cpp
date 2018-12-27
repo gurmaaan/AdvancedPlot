@@ -92,24 +92,8 @@ bool BulkDialog::compareDescriptors(CSVFile aF, CSVFile bF)
     QStringList aDescrList = aF.descriptorsNames();
     QStringList bDescrList = bF.descriptorsNames();
 
-    bool descrEqual = true;
-    if(aDescrList.count() == bDescrList.count())
-    {
-        for(int i = 0; i < aDescrList.count(); i++)
-        {
-
-            if( aDescrList.at(i) == bDescrList.at(i) )
-            {
-                continue;
-            }
-            else {
-                descrEqual = false;
-                break;
-            }
-        }
-    } else
-        descrEqual = false;
-    return  descrEqual;
+    bool dE = (aDescrList == bDescrList);
+    return dE;
 }
 
 QStringList BulkDialog::findDuplicatedObjectNames(CSVFile aF, CSVFile bF)
@@ -117,18 +101,15 @@ QStringList BulkDialog::findDuplicatedObjectNames(CSVFile aF, CSVFile bF)
     QStringList duplicatesList;
     QStringList aObjectsNames = aF.objects().keys();
     QStringList bObjectsNames = bF.objects().keys();
+
     for(int i = 0; i < aObjectsNames.count(); i++)
     {
         for(int j = 0; j < bObjectsNames.count(); j++)
         {
-            QString aOI = aObjectsNames.at(i);
-            if( aOI == bObjectsNames.at(j))
-            {
-                duplicatesList << aOI;
-            }
+            if( aObjectsNames.at(i) == bObjectsNames.at(j))
+                duplicatesList << aObjectsNames.at(i);
         }
     }
-
     return duplicatesList;
 }
 
@@ -165,10 +146,16 @@ void BulkDialog::processFiles(const CSVFile &aF, const CSVFile &bF)
     setDescriptorsIsValid( compareDescriptors(aF, bF) );
     QStringList duplicatedObjectsNames = findDuplicatedObjectNames(aF, bF);
     setDuplicatedNames(duplicatedObjectsNames);
-    qDebug() << duplicatedObjectsNames;
+    ui->duplicatesCnt_sb->setValue(duplicatedObjectsNames.count());
     bool dup = (duplicatedObjectsNames.count() == 0);
     setDuplicatesFound(!dup);
     setFilesNotEmpty(checkFIlesNotEmpty(aF, bF));
+
+    if(ui->descriptors_no_rb->isChecked() || ui->filesValid_no_rb->isChecked())
+    {
+        activeAct_.fill(false, 0, 9);
+        actionsActivating(activeAct_);
+    }
 }
 
 void BulkDialog::setDuplicatesFound(bool duplicatesFound)
@@ -177,8 +164,8 @@ void BulkDialog::setDuplicatesFound(bool duplicatesFound)
     ui->duplicates_yes_rb->setChecked(duplicatesFound);
     ui->duplicates_no_rb->setChecked(!ui->duplicates_yes_rb->isChecked());
 
-    activeAct_.fill(duplicatesFound, 0, 6);
-    activeAct_.fill(!duplicatesFound, 7, 8);
+    activeAct_.fill(duplicatesFound, 0, 7);
+    activeAct_.fill(!duplicatesFound, 7, 9);
 
     actionsActivating(activeAct_);
 }

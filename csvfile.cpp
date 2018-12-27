@@ -93,6 +93,7 @@ void CSVFile::loadFromFile(QString path)
         QFile csvFile(path);
         csvFile.open(QFile::ReadOnly | QFile::Text);
         QTextStream in(&csvFile);
+        qDebug() << path << in.codec()->name();
         QString fileContentStr = in.readAll();
 
         //FIXME добавить автоматическое определение разделителя файла
@@ -124,24 +125,27 @@ void CSVFile::loadFromFile(QString path)
             QStringList curRow = r.split(delim);
             QVector<qreal> rVals;
             objName = curRow.first();
-            curRow.removeFirst();
-            for(QString d : curRow)
+            if(objName != "")
             {
-                QStandardItem *item = new QStandardItem(d);
-                setAllTextData(item);
-                item->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
+                curRow.removeFirst();
+                for(QString d : curRow)
+                {
+                    QStandardItem *item = new QStandardItem(d);
+                    setAllTextData(item);
+                    item->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
 
-                d.replace( QChar(','), QChar('.') );
+                    d.replace( QChar(','), QChar('.') );
 
-                rVals << d.toDouble();
-                objectAtR << item;
+                    rVals << d.toDouble();
+                    objectAtR << item;
+                }
+                objcts[objName] = rVals;
+                mod->appendRow(objectAtR);
+
+                QStandardItem *vHItem = new QStandardItem(objName);
+                makeHeader(vHItem, Qt::Vertical);
+                mod->setVerticalHeaderItem(mod->rowCount() - 1, vHItem);
             }
-            objcts[objName] = rVals;
-            mod->appendRow(objectAtR);
-
-            QStandardItem *vHItem = new QStandardItem(objName);
-            makeHeader(vHItem, Qt::Vertical);
-            mod->setVerticalHeaderItem(mod->rowCount() - 1, vHItem);
         }
         setObjects(objcts);
         setModel(mod);

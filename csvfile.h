@@ -9,6 +9,7 @@
 #include <QStandardItemModel>
 #include <QStandardItem>
 #include <QTextStream>
+#include <QTextCodec>
 
 #include "static.h"
 

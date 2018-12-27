@@ -51,22 +51,32 @@
        <property name="title">
         <string>Дескрипторы:</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QRadioButton" name="descriptors_no_rb">
-          <property name="text">
-           <string>Не совпадают</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="descriptors_yes_rb">
-          <property name="text">
-           <string>Одинаковые</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QRadioButton" name="descriptors_no_rb">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>23</y>
+          <width>96</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Не совпадают</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="descriptors_yes_rb">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>50</y>
+          <width>88</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Одинаковые</string>
+        </property>
+       </widget>
       </widget>
      </item>
      <item row="0" column="1">
@@ -77,7 +87,7 @@
        <property name="title">
         <string>Дубликаты (имен объектов):</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <widget class="QRadioButton" name="duplicates_no_rb">
           <property name="text">
@@ -86,14 +96,40 @@
          </widget>
         </item>
         <item>
-         <widget class="QRadioButton" name="duplicates_yes_rb">
-          <property name="autoFillBackground">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Найдены</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QRadioButton" name="duplicates_yes_rb">
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Найдены</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="duplicatesCnt_sb">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::NoButtons</enum>
+            </property>
+            <property name="suffix">
+             <string> шт</string>
+            </property>
+            <property name="maximum">
+             <number>1000000</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>

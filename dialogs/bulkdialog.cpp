@@ -148,10 +148,28 @@ void BulkDialog::setFilesNotEmpty(bool filesNotEmpty)
 
 bool BulkDialog::compareDescriptors(CSVFile aF, CSVFile bF)
 {
-    QStringList aDescrList = aF.descriptorsNames();
-    QStringList bDescrList = bF.descriptorsNames();
+    QStringList aDescrList;
+    aDescrList.clear();
 
+    for(int i = 0; i < aF.model()->columnCount(); i++)
+        aDescrList << aF.model()->headerData(i, Qt::Horizontal).toString();
+
+    QStringList bDescrList;
+    bDescrList.clear();
+
+    for(int i = 0; i < bF.model()->columnCount(); i++)
+        bDescrList << bF.model()->headerData(i, Qt::Horizontal).toString();
+
+    aDescrList.sort();
+    bDescrList.sort();
+
+    for(int i = 0; i < aDescrList.count(); i++)
+    {
+        qDebug() << aDescrList.at(i) << " : " << bDescrList.at(i);
+    }
+    //FIXME кривое определение дескрипторов
     bool dE = (aDescrList == bDescrList);
+    qDebug() << dE << aDescrList.count() << bDescrList.count();
     return dE;
 }
 

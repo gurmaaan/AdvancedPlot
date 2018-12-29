@@ -19,6 +19,9 @@ void ColorButton::on_toolButton_clicked()
     QColor clr = QColorDialog::getColor(Qt::white, this);
     if( clr.isValid() )
         setColor(clr);
+    else {
+        setColor(QColor(Qt::white));
+    }
 }
 
 void ColorButton::genIcon(QColor clr)

@@ -31,7 +31,8 @@ SOURCES += \
         widgets/qcustomplot.cpp \
         widgets/filewidget.cpp \
         csvfile.cpp \
-    widgets/colorbutton.cpp
+    widgets/colorbutton.cpp \
+    widgets/axiswidget.cpp
 
 HEADERS += \
         static.h \
@@ -40,13 +41,15 @@ HEADERS += \
         widgets/qcustomplot.h \
         widgets/filewidget.h \
         csvfile.h \
-    widgets/colorbutton.h
+    widgets/colorbutton.h \
+    widgets/axiswidget.h
 
 FORMS += \
         dialogs/mainwindow.ui \
         dialogs/bulkdialog.ui \
         widgets/filewidget.ui \
-    widgets/colorbutton.ui
+    widgets/colorbutton.ui \
+    widgets/axiswidget.ui
 
 win32: RC_FILE = iconsource.rc
 

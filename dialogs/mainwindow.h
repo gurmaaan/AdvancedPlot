@@ -24,21 +24,15 @@ public:
 
 public slots:
     void runCgen(bool status);
-    void setupPlotDock(QStandardItemModel *model);
     void scrollAndSelect(int colNum = 0);
 
 private slots:
     void on_build_btn_clicked();
-    void on_x_cb_currentIndexChanged(int index);
-    void on_y_cb_currentIndexChanged(int index);
-    void on_dx_cb_currentIndexChanged(int index);
-    void on_dy_cb_currentIndexChanged(int index);
-
 private:
     Ui::MainWindow *ui;
     BulkDialog *bulkDialog_;
     void connectAll();
-    void setupFileWidgets();
+    void setupWidgets();
     FileWidget *aW_;
     FileWidget *bW_;
     FileWidget *cW_;

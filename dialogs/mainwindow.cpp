@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     cW_ = ui->fileC_widget;
 
     plot = ui->plot_view;
-    setupFileWidgets();
+    setupWidgets();
     connectAll();
     showMaximized();
 }
@@ -21,18 +21,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::setupPlotDock(QStandardItemModel *model)
-{
-    QStringList comboBoxItems;
-    for(int i = 0; i < model->columnCount(); i++)
-        comboBoxItems.append(model->horizontalHeaderItem(i)->statusTip());
-
-    ui->x_cb->addItems(comboBoxItems);
-    ui->y_cb->addItems(comboBoxItems);
-    ui->dx_cb->addItems(comboBoxItems);
-    ui->dy_cb->addItems(comboBoxItems);
 }
 
 void MainWindow::runCgen(bool status)
@@ -76,6 +64,15 @@ void MainWindow::connectAll()
     connect(cW_, &FileWidget::modelChanged,
             ui->fileC_tv, &QTableView::setModel);
 
+    connect(aW_, &FileWidget::modelChanged,
+            ui->xAxis, &AxisWidget::setModel);
+    connect(aW_, &FileWidget::modelChanged,
+            ui->yAxis, &AxisWidget::setModel);
+    connect(aW_, &FileWidget::modelChanged,
+            ui->dxAxis, &AxisWidget::setModel);
+    connect(aW_, &FileWidget::modelChanged,
+            ui->dyAxis, &AxisWidget::setModel);
+
     connect(bulkDialog_, &BulkDialog::fileCompleted,
             cW_, &FileWidget::receiveCSV);
 
@@ -85,13 +82,18 @@ void MainWindow::connectAll()
             this, &MainWindow::runCgen);
 }
 
-void MainWindow::setupFileWidgets()
+void MainWindow::setupWidgets()
 {
     aW_->setTitle("Файл А");
     bW_->setTitle("Файл В");
     cW_->setTitle("Файл С");
     cW_->setEnabled(false);
     cW_->setBtnVisible(false);
+
+    ui->xAxis->setT(AxisType::XAxis);
+    ui->yAxis->setT(AxisType::YAxis);
+    ui->dxAxis->setT(AxisType::dXAxis);
+    ui->dyAxis->setT(AxisType::dYAxis);
 }
 
 void MainWindow::scrollAndSelect(int colNum)
@@ -109,24 +111,4 @@ void MainWindow::on_build_btn_clicked()
     plot->xAxis->setLabel("Xui");
     plot->xAxis->setRange(-228,228);
     plot->replot();
-}
-
-void MainWindow::on_x_cb_currentIndexChanged(int index)
-{
-    scrollAndSelect(index);
-}
-
-void MainWindow::on_y_cb_currentIndexChanged(int index)
-{
-    scrollAndSelect(index);
-}
-
-void MainWindow::on_dx_cb_currentIndexChanged(int index)
-{
-    scrollAndSelect(index);
-}
-
-void MainWindow::on_dy_cb_currentIndexChanged(int index)
-{
-    scrollAndSelect(index);
 }

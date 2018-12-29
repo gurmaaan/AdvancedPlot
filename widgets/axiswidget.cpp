@@ -86,6 +86,11 @@ QColor AxisWidget::getColor()
     }
 }
 
+QString AxisWidget::name()
+{
+    return ui->axis_cb->currentText();
+}
+
 double AxisWidget::max() const
 {
     return max_;

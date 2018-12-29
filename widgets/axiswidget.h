@@ -44,6 +44,7 @@ public:
     void setAv(double av);
 
     QColor getColor();
+    QString name();
 public slots:
     void setModel(QStandardItemModel *model);
 

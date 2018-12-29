@@ -106,9 +106,31 @@ void MainWindow::scrollAndSelect(int colNum)
 void MainWindow::on_build_btn_clicked()
 {
     ui->tabWidget->setCurrentIndex(3);
+
+    plot->clearGraphs();
+
     plot->legend->setVisible(true);
     plot->legend->setFont(QFont("Helvetica", 9));
-    plot->xAxis->setLabel("Xui");
-    plot->xAxis->setRange(-228,228);
+    plot->xAxis->setLabel(ui->xAxis->name());
+    plot->yAxis->setLabel(ui->yAxis->name());
+
+    plot->addGraph();
+    plot->graph(0)->setPen(QPen(ui->pointClr->color()));
+    plot->graph(0)->setLineStyle(QCPGraph::lsNone);
+    plot->graph(0)->setScatterStyle( QCPScatterStyle( QCPScatterStyle::ssDisc, ui->pointSize_sb->value() ) );
+    plot->graph(0)->setName("Dependance " + ui->yAxis->name() + " of " + ui->xAxis->name() );
+
+    QCPErrorBars *errorBars = new QCPErrorBars(plot->xAxis, plot->yAxis);
+    errorBars->removeFromLegend();
+    errorBars->setAntialiased(false);
+    errorBars->setDataPlottable(plot->graph(0));
+    errorBars->setPen(QPen(ui->dyAxis->getColor()));
+
+    plot->graph(0)->setData(ui->xAxis->values(), ui->yAxis->values());
+    errorBars->setData(ui->dyAxis->values());
+    plot->graph(0)->rescaleAxes(true);
+
+    plot->axisRect()->setupFullAxesBox();
+
     plot->replot();
 }

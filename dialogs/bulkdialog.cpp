@@ -168,8 +168,8 @@ bool BulkDialog::compareDescriptors(CSVFile aF, CSVFile bF)
         qDebug() << aDescrList.at(i) << " : " << bDescrList.at(i);
     }
     //FIXME кривое определение дескрипторов
-    bool dE = (aDescrList == bDescrList);
-    qDebug() << dE << aDescrList.count() << bDescrList.count();
+    bool dE = (aF.model()->columnCount() == bF.model()->columnCount());
+    qDebug() << dE << aF.model()->columnCount() << bF.model()->columnCount();
     return dE;
 }
 

@@ -23,13 +23,11 @@ void FileWidget::on_file_btn_clicked()
     CSVFile csvFile(filePath);
     setCsv(csvFile);
 
-    int rcnt = csvFile.model()->rowCount();
-    int ccnt = csvFile.model()->columnCount();
-    setupSB(ui->descrCnt_sb, ccnt);
-    setupSB(ui->objctsCnt_sb, rcnt);
+    setupSB(ui->descrCnt_sb, csvFile.model()->columnCount());
+    setupSB(ui->objctsCnt_sb, csvFile.model()->rowCount());
+    ui->fCfR_le->setText(csvFile.getFRfCstr());
 
     emit modelChanged(csvFile.model());
-
     setParsingState(true);
 }
 
@@ -42,6 +40,11 @@ void FileWidget::setParsingState(bool parsingState)
 {
     parsingState_ = parsingState;
     emit parsingDone(parsingState);
+}
+
+QString FileWidget::fileName()
+{
+    return ui->file_le->text().split("/").last();
 }
 
 QString FileWidget::requiredPath(QDir currentDir, const QString &redirect, const QStandardPaths::StandardLocation &loc)
@@ -98,6 +101,10 @@ void FileWidget::receiveCSV(CSVFile file)
 {
     setCsv(file);
     ui->file_le->setText(file.path());
-    ui->descrCnt_sb->setValue(file.model()->columnCount());
-    ui->objctsCnt_sb->setValue(file.model()->rowCount());
+    ui->fCfR_le->setText(file.getFRfCstr());
+    setupSB(ui->descrCnt_sb, file.model()->columnCount());
+    setupSB(ui->objctsCnt_sb, file.model()->rowCount());
+
+    emit modelChanged(file.model());
+    setParsingState(true);
 }

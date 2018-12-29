@@ -26,6 +26,8 @@ public:
     bool parsingState() const;
     void setParsingState(bool parsingState);
 
+    QString fileName();
+
 public slots:
     void setBtnVisible(bool status);
     void setPath(QString filePath);

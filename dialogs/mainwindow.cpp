@@ -7,13 +7,15 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    bulkDialog_ = new BulkDialog;
     aW_ = ui->fileA_widget;
-//    bW_ = ui->fileB_widget;
-//    cW_ = ui->fileC_widget;
+    bW_ = ui->fileB_widget;
+    cW_ = ui->fileC_widget;
 
     plot = ui->plot_view;
     setupFileWidgets();
     connectAll();
+    showMaximized();
 }
 
 MainWindow::~MainWindow()
@@ -33,54 +35,63 @@ void MainWindow::setupPlotDock(QStandardItemModel *model)
     ui->dy_cb->addItems(comboBoxItems);
 }
 
-//void MainWindow::runCgen(bool status)
-//{
-//    bool allCompleted = status && aW_->parsingState() && bW_->parsingState();
-//    cW_->setEnabled(allCompleted);
-//    ui->plot_dock->setEnabled(allCompleted);
-//    int curInd = 0;
-//    if( aW_->parsingState() && (!bW_->parsingState()) )
-//        curInd = 0;
-//    else if(bW_->parsingState() && (!aW_->parsingState()) )
-//        curInd = 1;
-//    else if(allCompleted)
-//        curInd = 2;
-//    ui->tabWidget->setCurrentIndex(curInd);
+void MainWindow::runCgen(bool status)
+{
+    bool allCompleted = status && aW_->parsingState() && bW_->parsingState();
 
-//    if(allCompleted)
-//    {
-//        BulkDialog *bulk = new BulkDialog;
-//        bulk->show();
-//        bulk->processFiles(aW_->csv(), bW_->csv());
+    cW_->setEnabled(allCompleted);
+    ui->plot_dock->setEnabled(allCompleted);
 
-//    }
-//}
+    int curInd = 0;
+    if( aW_->parsingState() && (!bW_->parsingState()) )
+    {
+        curInd = 0;
+        ui->tabWidget->setTabText( curInd, aW_->fileName() );
+    }
+    else if(bW_->parsingState() && (!aW_->parsingState()) )
+    {
+        curInd = 1;
+        ui->tabWidget->setTabText( curInd, bW_->fileName() );
+    }
+    else if(allCompleted)
+    {
+        curInd = 2;
+//        ui->tabWidget->setTabText( curInd, cW_->fileName() );
+    }
+    ui->tabWidget->setCurrentIndex(curInd);
+
+    if(allCompleted)
+    {
+        bulkDialog_->show();
+        bulkDialog_->processFiles(aW_->csv(), bW_->csv());
+    }
+}
 
 void MainWindow::connectAll()
 {
     connect(aW_, &FileWidget::modelChanged,
             ui->fileA_tv, &QTableView::setModel);
+    connect(bW_, &FileWidget::modelChanged,
+            ui->fileB_tv, &QTableView::setModel);
+    connect(cW_, &FileWidget::modelChanged,
+            ui->fileC_tv, &QTableView::setModel);
+
+    connect(bulkDialog_, &BulkDialog::fileCompleted,
+            cW_, &FileWidget::receiveCSV);
+
     connect(aW_, &FileWidget::parsingDone,
-            ui->plot_dock, &QDockWidget::setEnabled);
-    connect(aW_, &FileWidget::modelChanged,
-            this, &MainWindow::setupPlotDock);
-
-//    connect(bW_, &FileWidget::modelChanged,
-//            ui->fileB_tv, &QTableView::setModel);
-
-//    connect(aW_, &FileWidget::parsingDone,
-//            this, &MainWindow::runCgen);
-//    connect(bW_, &FileWidget::parsingDone,
-//            this, &MainWindow::runCgen);
+            this, &MainWindow::runCgen);
+    connect(bW_, &FileWidget::parsingDone,
+            this, &MainWindow::runCgen);
 }
 
 void MainWindow::setupFileWidgets()
 {
     aW_->setTitle("Файл А");
-//    bW_->setTitle("Файл В");
-//    cW_->setTitle("Файл С");
-//    cW_->setEnabled(false);
-    //    cW_->setBtnVisible(false);
+    bW_->setTitle("Файл В");
+    cW_->setTitle("Файл С");
+    cW_->setEnabled(false);
+    cW_->setBtnVisible(false);
 }
 
 void MainWindow::scrollAndSelect(int colNum)
@@ -103,8 +114,6 @@ void MainWindow::on_build_btn_clicked()
 void MainWindow::on_x_cb_currentIndexChanged(int index)
 {
     scrollAndSelect(index);
-    QStandardItemModel *aModel = ui->fileA_widget->csv().model();
-
 }
 
 void MainWindow::on_y_cb_currentIndexChanged(int index)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1233</width>
-    <height>871</height>
+    <width>699</width>
+    <height>1427</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -85,7 +85,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1233</width>
+     <width>699</width>
      <height>21</height>
     </rect>
    </property>
@@ -103,7 +103,7 @@
    <property name="minimumSize">
     <size>
      <width>400</width>
-     <height>184</height>
+     <height>487</height>
     </size>
    </property>
    <property name="features">
@@ -121,12 +121,48 @@
    <widget class="QWidget" name="fileDock_cntnt">
     <layout class="QVBoxLayout" name="verticalLayout_5">
      <item>
-      <widget class="FileWidget" name="fileA_widget" native="true"/>
+      <widget class="FileWidget" name="fileA_widget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>140</height>
+        </size>
+       </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="FileWidget" name="fileB_widget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>140</height>
+        </size>
+       </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="Line" name="file_h_line">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="FileWidget" name="fileC_widget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>140</height>
+        </size>
+       </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -326,13 +362,13 @@
       </layout>
      </item>
      <item>
-      <widget class="QGroupBox" name="groupBox">
+      <widget class="QGroupBox" name="points_gb">
        <property name="title">
         <string>Точки</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QHBoxLayout" name="pointsSize_H_lyt">
           <item>
            <widget class="QLabel" name="pointSize_lbl">
             <property name="text">
@@ -375,7 +411,7 @@
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <layout class="QHBoxLayout" name="pointsClr_H_lyt">
           <item>
            <widget class="ColorButton" name="pointClr" native="true">
             <property name="minimumSize">
@@ -387,7 +423,7 @@
            </widget>
           </item>
           <item>
-           <spacer name="horizontalSpacer">
+           <spacer name="pointsClr_H_spcr">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -442,7 +478,7 @@
       </layout>
      </item>
      <item>
-      <spacer name="plot_V_spcr">
+      <spacer name="plotDock_V_spcr">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>

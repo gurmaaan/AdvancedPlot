@@ -5,6 +5,7 @@
 #include <QAction>
 #include <QBitArray>
 #include <QDir>
+#include <QDebug>
 #include <QIODevice>
 #include <QFileDialog>
 
@@ -68,6 +69,7 @@ private:
     QBitArray activeAct_;
     void actionsActivating(const QBitArray &activeAct);
     QString genPath(QString pathA, QString pathB, QString nameC);
+    QStandardItemModel *genEmptyModelWithHeaders();
 };
 
 #endif // BULKDIALOG_H

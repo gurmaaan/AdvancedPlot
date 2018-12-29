@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>212</width>
-    <height>109</height>
+    <width>240</width>
+    <height>140</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>240</width>
+    <height>140</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>GroupBox</string>
@@ -21,7 +27,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="file_H_lyt">
      <item>
       <widget class="QLineEdit" name="file_le"/>
      </item>
@@ -29,6 +35,24 @@
       <widget class="QToolButton" name="file_btn">
        <property name="text">
         <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="fCfR_h_lyt">
+     <item>
+      <widget class="QLabel" name="fCfR_lbl">
+       <property name="text">
+        <string>( 0 ; 0 )</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="fCfR_le">
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

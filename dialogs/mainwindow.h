@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QComboBox>
+//
 #include "csvfile.h"
 #include <widgets/qcustomplot.h>
 #include "widgets/filewidget.h"
@@ -22,7 +23,7 @@ public:
     ~MainWindow();
 
 public slots:
-    //void runCgen(bool status);
+    void runCgen(bool status);
     void setupPlotDock(QStandardItemModel *model);
     void scrollAndSelect(int colNum = 0);
 
@@ -35,11 +36,12 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    BulkDialog *bulkDialog_;
     void connectAll();
     void setupFileWidgets();
     FileWidget *aW_;
-//    FileWidget *bW_;
-//    FileWidget *cW_;
+    FileWidget *bW_;
+    FileWidget *cW_;
     QCustomPlot *plot;
 };
 

@@ -23,14 +23,14 @@ BulkDialog::~BulkDialog()
 
 void BulkDialog::on_action_rule_1_triggered()
 {
-    QStringList aObjNames = fileA_.objects().keys();
-    QStringList bObjNames = fileB_.objects().keys();
+    QStringList aObjNames = fileA_.objNames();
+    QStringList bObjNames = fileB_.objNames();
+
     QString cPath = genPath(fileA_.path(), fileB_.path(), "C.csv");
-    QStringList cFileRows;
-    for(QString aOName : aObjNames)
-        cFileRows.append( fileA_.fileObjStr(aOName));
-
-
+    QStandardItemModel *cModel = genEmptyModelWithHeaders();
+    CSVFile fileC(cPath, cModel);
+    emit fileCompleted(fileC);
+    close();
 }
 
 void BulkDialog::on_action_rule_2_triggered()
@@ -106,8 +106,8 @@ bool BulkDialog::compareDescriptors(CSVFile aF, CSVFile bF)
 QStringList BulkDialog::findDuplicatedObjectNames(CSVFile aF, CSVFile bF)
 {
     QStringList duplicatesList;
-    QStringList aObjectsNames = aF.objects().keys();
-    QStringList bObjectsNames = bF.objects().keys();
+    QStringList aObjectsNames = aF.objNames();
+    QStringList bObjectsNames = bF.objNames();
 
     for(int i = 0; i < aObjectsNames.count(); i++)
     {
@@ -149,6 +149,18 @@ QString BulkDialog::genPath(QString pathA, QString pathB, QString nameC)
         pathC = QFileDialog::getSaveFileName(nullptr, "Выберите папку для сохранения файла");
     }
     return pathC;
+}
+
+QStandardItemModel *BulkDialog::genEmptyModelWithHeaders()
+{
+    QStandardItemModel *cModel = new QStandardItemModel;
+    for(int j = 0; j < fileA_.model()->columnCount(); j++)
+    {
+        QStandardItem *hHItem = new QStandardItem(fileA_.model()->horizontalHeaderItem(j)->text());
+        CSVFile::makeHeader(hHItem, Qt::Horizontal);
+        cModel->setHorizontalHeaderItem(cModel->columnCount(), hHItem);
+    }
+    return cModel;
 }
 
 QStringList BulkDialog::duplicatedNames() const

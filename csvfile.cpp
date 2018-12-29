@@ -8,24 +8,27 @@ CSVFile::CSVFile(QObject *parent) : QObject(parent)
 CSVFile::CSVFile(const CSVFile &csv, QObject *parent) : QObject(parent)
 {
     path_ = csv.path_;
-    descriptorsNames_ = csv.descriptorsNames_;
-    objects_ = csv.objects_;
+    fRfCstr_ = csv.fRfCstr_;
     delim_ = csv.delim_;
     model_ = csv.model_;
 }
 
-CSVFile::CSVFile(QString path)
+CSVFile::CSVFile(QString pathToOpen)
 {
-    loadFromFile(path);
+    loadFromFile(pathToOpen);
 }
 
-CSVFile::CSVFile(const QString &path, const QStringList &descriptorsNames, const QMap<QString, QVector<qreal> > &objects)
+CSVFile::CSVFile(QString pathToSave, QStandardItemModel *model)
 {
-    path_ = path;
-    descriptorsNames_ = descriptorsNames;
-    objects_ = objects;
-    delim_ = QChar(';');
-    model_ = genModel(descriptorsNames, objects);
+    QFile file(pathToSave);
+    if( file.open(QIODevice::WriteOnly) )
+    {
+        setPath(pathToSave);
+        setFRfCstr("...");
+        setDelim(';');
+        setModel(model);
+    }
+
 }
 
 QStandardItemModel *CSVFile::model() const
@@ -38,15 +41,26 @@ void CSVFile::setModel(QStandardItemModel *model)
     model_ = model;
 }
 
-void CSVFile::saveToFile()
+void CSVFile::saveToFile(QString pathToSave)
 {
+    if(pathToSave == "")
+    {
+        QString userPathToSave = QFileDialog::getSaveFileName(nullptr, "Выберите папку для сохранения");
+        if( checkPath(userPathToSave) )
+            setPath(userPathToSave);
+    }
+    else
+    {
+        if( checkPath(pathToSave) )
+            setPath(pathToSave);
+    }
     QFile file(path());
     if(file.open(QIODevice::WriteOnly))
     {
         QTextStream textStream( &file );
         textStream << fileHeaderStr() << endl;
-        for(QString objName : objects().keys())
-            textStream << fileObjStr(objName);
+        for(QString objName : objNames())
+            textStream << getObjStr(objName) << endl;
     }
 }
 
@@ -62,32 +76,28 @@ void CSVFile::setPath(const QString &path)
 
 QStringList CSVFile::descriptorsNames() const
 {
-    return descriptorsNames_;
+    QStringList descrNames;
+    for(int j = 0; j < model_->columnCount(); j++)
+        descrNames.append( model_->horizontalHeaderItem(j)->text() );
+    return descrNames;
 }
 
-void CSVFile::setDescriptorsNames(const QStringList &descriptorsNames)
+QStringList CSVFile::objNames() const
 {
-    descriptorsNames_ = descriptorsNames;
+    QStringList objNames;
+    for(int i = 0; i < model_->rowCount(); i++)
+        objNames.append( model_->verticalHeaderItem(i)->text() );
+    return objNames;
 }
 
-QChar CSVFile::delim() const
+QString CSVFile::delim() const
 {
-    return delim_;
+    return QString(delim_);
 }
 
 void CSVFile::setDelim(const QChar &delim)
 {
     delim_ = delim;
-}
-
-QMap<QString, QVector<qreal> > CSVFile::objects() const
-{
-    return objects_;
-}
-
-void CSVFile::setObjects(const QMap<QString, QVector<qreal> > &objects)
-{
-    objects_ = objects;
 }
 
 CSVFile &CSVFile::operator=(const CSVFile &csv)
@@ -97,73 +107,49 @@ CSVFile &CSVFile::operator=(const CSVFile &csv)
 
     if( checkPath(csv.path_) )
         path_ = csv.path_;
-    descriptorsNames_ = csv.descriptorsNames_;
-    objects_ = csv.objects_;
+
     delim_ = csv.delim_;
     model_ = csv.model_;
 
     return *this;
 }
 
-QStandardItemModel *CSVFile::genModel(QStringList descrNames, QMap<QString, QVector<qreal> > objcts)
+QString CSVFile::getFRfCstr() const
 {
-    QStandardItemModel *objModel = new QStandardItemModel;
+    return fRfCstr_;
+}
 
-    for(QString headerStr : descrNames)
-    {
-        headerStr.insert(headerStr.count() / 2, '\n');
-        QStandardItem *hHItem = new QStandardItem(headerStr);
-        makeHeader(hHItem, Qt::Horizontal);
-        objModel->setHorizontalHeaderItem(objModel->columnCount(), hHItem);
-    }
-
-    for(QString objName : objcts.keys())
-    {
-        QList<QStandardItem*> objectAtR;
-
-        for(qreal d : objcts[objName])
-        {
-            QStandardItem *item = new QStandardItem(QString::number(d));
-            setAllTextData(item);
-            item->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
-            objectAtR << item;
-        }
-        objModel->appendRow(objectAtR);
-
-        QStandardItem *vHItem = new QStandardItem(objName);
-        makeHeader(vHItem, Qt::Vertical);
-        objModel->setVerticalHeaderItem(objModel->rowCount() - 1, vHItem);
-    }
-
-    return objModel;
+void CSVFile::setFRfCstr(const QString &fRfcStr)
+{
+    fRfCstr_ = fRfcStr;
 }
 
 QString CSVFile::fileHeaderStr()
 {
-    QString hStr = "    ;";
+    QString hStr = fRfCstr_ + delim();
     for(QString h : descriptorsNames())
     {
         if(h == descriptorsNames().last())
             hStr = hStr + h;
         else {
-            hStr = hStr + h + QString(";");
+            hStr = hStr + h + delim();
         }
     }
     return  hStr;
 }
 
-QString CSVFile::fileObjStr(QString objName)
+QString CSVFile::getObjStr(QString objName)
 {
-    QString row;
-    row = row + objName + QString(";");
-    QStringList descStrs;
-    for(qreal d : objects()[objName])
+    QString row = "";
+    row = objName + delim();
+
+    QList<QStandardItem*> modelRow = model_->takeRow( objNames().indexOf(objName) );
+    for(QStandardItem *item :  modelRow)
     {
-        if(d == objects()[objName].last())
-            row = row + QString::number(d);
-        else {
-            row = row + QString::number(d) + QString(";");
-        }
+       if( item == modelRow.last() )
+           row = row + item->text();
+       else
+           row = row + item->text() + delim();
     }
     return row;
 }
@@ -176,67 +162,57 @@ void CSVFile::loadFromFile(QString path)
 
         QFile csvFile(path);
         csvFile.open(QFile::ReadOnly | QFile::Text);
-        QTextStream in(&csvFile);
+        QTextStream in( &csvFile );
         QString fileContentStr = in.readAll();
 
         //FIXME добавить автоматическое определение разделителя файла
         //QChar delim = detectDelim(fileContentStr);
-        QChar delim(';');
-        setDelim(delim);
+        setDelim(';');
 
-        QStandardItemModel *mod = new QStandardItemModel;
+        QStandardItemModel *csvModel = new QStandardItemModel;
 
-        QStringList rows = fileContentStr.split('\n');
-        QStringList firstRowCols = rows.at(0).split(delim);
-        firstRowCols.removeFirst();
-        setDescriptorsNames(firstRowCols);
+        QStringList rowStrList = fileContentStr.split('\n');
+        QStringList headerRowStrList = rowStrList.first().split(delim());
+        setFRfCstr( headerRowStrList.first() );
+        headerRowStrList.removeFirst();
 
-        for(QString headerStr : firstRowCols)
+        for(QString headerStr : headerRowStrList)
         {
-            QStandardItem *hHItem = new QStandardItem;
-            hHItem->setWhatsThis(headerStr);
-            hHItem->setStatusTip(headerStr);
-            //headerStr.insert(headerStr.count() / 2, '\n');
-            hHItem->setText(headerStr);
+            QStandardItem *hHItem = new QStandardItem(headerStr);
             makeHeader(hHItem, Qt::Horizontal);
-            mod->setHorizontalHeaderItem(mod->columnCount(), hHItem);
+            csvModel->setHorizontalHeaderItem(csvModel->columnCount(), hHItem);
         }
+        rowStrList.removeFirst();
 
-        rows.removeFirst();
-        QMap< QString, QVector<qreal> > objcts;
-        QString objName;
-        for(QString r : rows)
+        QString objName = "";
+        for(QString row : rowStrList)
         {
-            QList<QStandardItem*> objectAtR;
-            QStringList curRow = r.split(delim);
-            QVector<qreal> rVals;
-            objName = curRow.first();
+            QList<QStandardItem*> modelRow;
+            QStringList curRowStrList = row.split(delim());
+
+            objName = curRowStrList.first();
             if(objName != "")
             {
-                curRow.removeFirst();
-                for(QString d : curRow)
+                curRowStrList.removeFirst();
+                for(QString itemStr : curRowStrList)
                 {
-                    QStandardItem *item = new QStandardItem(d);
+                    QStandardItem *item = new QStandardItem(itemStr);
                     setAllTextData(item);
                     item->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
-
-                    d.replace( QChar(','), QChar('.') );
-
-                    rVals << d.toDouble();
-                    objectAtR << item;
+                    itemStr.replace( QChar(','), QChar('.') );
+                    item->setData( itemStr.toDouble(), Qt::UserRole );
+                    modelRow << item;
                 }
-                objcts[objName] = rVals;
-                mod->appendRow(objectAtR);
+
+                csvModel->appendRow(modelRow);
 
                 QStandardItem *vHItem = new QStandardItem(objName);
                 makeHeader(vHItem, Qt::Vertical);
-                mod->setVerticalHeaderItem(mod->rowCount() - 1, vHItem);
+                csvModel->setVerticalHeaderItem(csvModel->rowCount() - 1, vHItem);
             }
         }
-        setObjects(objcts);
-        setModel(mod);
+        setModel(csvModel);
     }
-
 }
 
 bool CSVFile::checkPath(QString path)
@@ -258,18 +234,17 @@ bool CSVFile::fileExists(QString path)
 {
     bool correctFile = false;
     QFileInfo testFile(path);
-    correctFile = ( testFile.exists() && testFile.isFile() ) ? true : false;
+    correctFile = testFile.exists() && testFile.isFile();
     return correctFile;
 }
 
 void CSVFile::makeHeader(QStandardItem *item, Qt::Orientation orient)
 {
-    Qt::AlignmentFlag al;
+    Qt::AlignmentFlag al = (orient == Qt::Vertical) ? Qt::AlignRight : Qt::AlignCenter;
     setAllTextData(item);
     QFont f = item->font();
     f.setBold(true);
     item->setData(f, Qt::FontRole);
-    al = (orient == Qt::Vertical) ? Qt::AlignRight : Qt::AlignCenter;
     item->setData(al, Qt::TextAlignmentRole);
 }
 

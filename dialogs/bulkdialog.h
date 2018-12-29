@@ -32,6 +32,11 @@ public:
 
     void processFiles(const CSVFile &aF,const CSVFile &bF);
 
+    void setAModel(QStandardItemModel *aModel);
+    void setBModel(QStandardItemModel *bModel);
+
+    void setCPath(const QString &cPath);
+
 public slots:
     void setDescriptorsIsValid(bool descriptorsIsValid);
     void setDuplicatesFound(bool duplicatesFound);
@@ -62,14 +67,22 @@ private:
     bool filesNotEmpty_;
 
     bool compareDescriptors(CSVFile aF, CSVFile bF);
+    bool checkFIlesNotEmpty(CSVFile aF, CSVFile bF);
+
     QStringList duplicatedNames_;
     QStringList findDuplicatedObjectNames(CSVFile aF, CSVFile bF);
-    bool checkFIlesNotEmpty(CSVFile aF, CSVFile bF);
+    bool oneOfDuplicated(QString test, QStringList duplicates);
 
     QBitArray activeAct_;
     void actionsActivating(const QBitArray &activeAct);
     QString genPath(QString pathA, QString pathB, QString nameC);
+
+    QStandardItemModel *aModel_;
+    QStandardItemModel *bModel_;
+    QString cPath_;
+
     QStandardItemModel *genEmptyModelWithHeaders();
+    void copyItems(QStandardItemModel *sourceModel, QStandardItemModel *targetModel, QStringList duplicates,QString suffix, bool onlyDuplicates);
 };
 
 #endif // BULKDIALOG_H

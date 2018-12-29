@@ -23,54 +23,106 @@ BulkDialog::~BulkDialog()
 
 void BulkDialog::on_action_rule_1_triggered()
 {
-    QStringList aObjNames = fileA_.objNames();
-    QStringList bObjNames = fileB_.objNames();
-
-    QString cPath = genPath(fileA_.path(), fileB_.path(), "C.csv");
     QStandardItemModel *cModel = genEmptyModelWithHeaders();
-    CSVFile fileC(cPath, cModel);
+
+    copyItems(aModel_, cModel, duplicatedNames_, "_A", false);
+    copyItems(aModel_, cModel, duplicatedNames_, "_A", true);
+    copyItems(bModel_, cModel, duplicatedNames_, "_B", true);
+    copyItems(bModel_, cModel, duplicatedNames_, "_B", false);
+
+    CSVFile fileC(cPath_, cModel);
     emit fileCompleted(fileC);
     close();
 }
 
 void BulkDialog::on_action_rule_2_triggered()
 {
+    QStandardItemModel *cModel = genEmptyModelWithHeaders();
 
+    copyItems(aModel_, cModel, duplicatedNames_, "_A", false);
+    copyItems(aModel_, cModel, duplicatedNames_, "_A", true);
+    copyItems(bModel_, cModel, duplicatedNames_, "_B", false);
+
+    CSVFile fileC(cPath_, cModel);
+    emit fileCompleted(fileC);
+    close();
 }
 
 void BulkDialog::on_action_rule_3_triggered()
 {
+    QStandardItemModel *cModel = genEmptyModelWithHeaders();
 
+    copyItems(aModel_, cModel, duplicatedNames_, "_A", false);
+    copyItems(bModel_, cModel, duplicatedNames_, "_B", false);
+
+    CSVFile fileC(cPath_, cModel);
+    emit fileCompleted(fileC);
+    close();
 }
 
 void BulkDialog::on_action_rule_4_triggered()
 {
+    QStandardItemModel *cModel = genEmptyModelWithHeaders();
 
+    copyItems(aModel_, cModel, duplicatedNames_, "_A", true);
+    copyItems(bModel_, cModel, duplicatedNames_, "_B", true);
+
+    CSVFile fileC(cPath_, cModel);
+    emit fileCompleted(fileC);
+    close();
 }
 
 void BulkDialog::on_action_rule_5_triggered()
 {
+    QStandardItemModel *cModel = genEmptyModelWithHeaders();
 
+    copyItems(aModel_, cModel, duplicatedNames_, "_A", true);
+
+    CSVFile fileC(cPath_, cModel);
+    emit fileCompleted(fileC);
+    close();
 }
 
 void BulkDialog::on_action_rule_6_triggered()
 {
+    QStandardItemModel *cModel = genEmptyModelWithHeaders();
 
+    copyItems(aModel_, cModel, duplicatedNames_, "_A", false);
+
+    CSVFile fileC(cPath_, cModel);
+    emit fileCompleted(fileC);
+    close();
 }
 
 void BulkDialog::on_action_rule_7_triggered()
 {
+    QStandardItemModel *cModel = genEmptyModelWithHeaders();
 
+    copyItems(aModel_, cModel, duplicatedNames_, "_A", false);
+    copyItems(bModel_, cModel, duplicatedNames_, "_B", true);
+
+    CSVFile fileC(cPath_, cModel);
+    emit fileCompleted(fileC);
+    close();
 }
 
 void BulkDialog::on_action_rule_8_triggered()
 {
-
+    CSVFile fileC(fileA_);
+    emit fileCompleted(fileC);
+    close();
 }
 
 void BulkDialog::on_action_rule_9_triggered()
 {
+    QStandardItemModel *cModel = genEmptyModelWithHeaders();
 
+    copyItems(aModel_, cModel, duplicatedNames_, "_A", false);
+    copyItems(bModel_, cModel, duplicatedNames_, "_B", false);
+
+    CSVFile fileC(cPath_, cModel);
+    emit fileCompleted(fileC);
+    close();
 }
 
 void BulkDialog::copyActionsUIToBtns()
@@ -120,6 +172,20 @@ QStringList BulkDialog::findDuplicatedObjectNames(CSVFile aF, CSVFile bF)
     return duplicatesList;
 }
 
+bool BulkDialog::oneOfDuplicated(QString test, QStringList duplicates)
+{
+    bool testIsDup = false;
+    for(QString dup : duplicates)
+    {
+        if(test == dup)
+        {
+            testIsDup = true;
+            break;
+        }
+    }
+    return testIsDup;
+}
+
 bool BulkDialog::checkFIlesNotEmpty(CSVFile aF, CSVFile bF)
 {
     bool notEmpty = !((aF.model()->rowCount() == 0) || (bF.model()->rowCount() == 0));
@@ -151,6 +217,21 @@ QString BulkDialog::genPath(QString pathA, QString pathB, QString nameC)
     return pathC;
 }
 
+void BulkDialog::setCPath(const QString &cPath)
+{
+    cPath_ = cPath;
+}
+
+void BulkDialog::setBModel(QStandardItemModel *bModel)
+{
+    bModel_ = bModel;
+}
+
+void BulkDialog::setAModel(QStandardItemModel *aModel)
+{
+    aModel_ = aModel;
+}
+
 QStandardItemModel *BulkDialog::genEmptyModelWithHeaders()
 {
     QStandardItemModel *cModel = new QStandardItemModel;
@@ -161,6 +242,43 @@ QStandardItemModel *BulkDialog::genEmptyModelWithHeaders()
         cModel->setHorizontalHeaderItem(cModel->columnCount(), hHItem);
     }
     return cModel;
+}
+
+void BulkDialog::copyItems(QStandardItemModel *sourceModel, QStandardItemModel *targetModel, QStringList duplicates, QString suffix, bool onlyDuplicates)
+{
+    //TODO доработать
+    for (int i = 0; i < sourceModel->rowCount(); i++)
+    {
+        QString originalObjNameAtI = sourceModel->headerData(i, Qt::Vertical).toString();
+        bool condition;
+        if(onlyDuplicates)
+        {
+            condition = oneOfDuplicated(originalObjNameAtI, duplicates);
+            originalObjNameAtI = originalObjNameAtI + suffix;
+            qDebug() << onlyDuplicates << originalObjNameAtI << condition;
+        }
+        else
+        {
+            condition = !oneOfDuplicated(originalObjNameAtI, duplicates);
+        }
+
+        if(!condition)
+            continue;
+        else
+        {
+            QList<QStandardItem*> rowSourceAtI = sourceModel->takeRow(i);
+            QList<QStandardItem*> rowCopyAtI;
+            for(QStandardItem *aIt : rowSourceAtI)
+            {
+                QStandardItem *cIt = aIt->clone();
+                rowCopyAtI << cIt;
+            }
+            targetModel->appendRow(rowCopyAtI);
+            QStandardItem *vHItem = new QStandardItem(originalObjNameAtI);
+            CSVFile::makeHeader(vHItem, Qt::Vertical);
+            targetModel->setVerticalHeaderItem(targetModel->rowCount() - 1, vHItem);
+        }
+    }
 }
 
 QStringList BulkDialog::duplicatedNames() const
@@ -176,7 +294,11 @@ void BulkDialog::setDuplicatedNames(const QStringList &duplicatedNames)
 void BulkDialog::processFiles(const CSVFile &aF, const CSVFile &bF)
 {
     setFileA(aF);
+    setAModel(aF.model());
     setFileB(bF);
+    setBModel(bF.model());
+    setCPath( genPath(aF.path(), bF.path(), "C.csv") );
+
     setDescriptorsIsValid( compareDescriptors(aF, bF) );
     QStringList duplicatedObjectsNames = findDuplicatedObjectNames(aF, bF);
     setDuplicatedNames(duplicatedObjectsNames);

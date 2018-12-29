@@ -6,12 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>186</width>
+    <width>212</width>
     <height>109</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>GroupBox</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
   </property>
   <property name="title">
    <string>File</string>
@@ -36,7 +39,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="descrCnt_lbl">
        <property name="text">
-        <string>Кол-во дескрипторов</string>
+        <string>Количество дескрипторов</string>
        </property>
       </widget>
      </item>
@@ -53,7 +56,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="objctsCnt_lbl">
        <property name="text">
-        <string>Кол-во объектов</string>
+        <string>Количество объектов</string>
        </property>
       </widget>
      </item>

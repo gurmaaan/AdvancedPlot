@@ -23,6 +23,13 @@ BulkDialog::~BulkDialog()
 
 void BulkDialog::on_action_rule_1_triggered()
 {
+    QStringList aObjNames = fileA_.objects().keys();
+    QStringList bObjNames = fileB_.objects().keys();
+    QString cPath = genPath(fileA_.path(), fileB_.path(), "C.csv");
+    QStringList cFileRows;
+    for(QString aOName : aObjNames)
+        cFileRows.append( fileA_.fileObjStr(aOName));
+
 
 }
 
@@ -127,6 +134,21 @@ void BulkDialog::actionsActivating(const QBitArray &activeAct)
         QCommandLinkButton *cmdBtn = this->findChild<QCommandLinkButton*>(btnName);
         cmdBtn->setEnabled(activeAct.at(i-1));
     }
+}
+
+QString BulkDialog::genPath(QString pathA, QString pathB, QString nameC)
+{
+    QString nameA = pathA.split("/").last();
+    QString dirA = pathA.left(pathA.length() - nameA.length());
+    QString nameB = pathB.split("/").last();
+    QString dirB = pathB.left(pathB.length() - nameB.length());
+    QString pathC = "";
+    if(dirA == dirB)
+        pathC = dirA + nameC;
+    else {
+        pathC = QFileDialog::getSaveFileName(nullptr, "Выберите папку для сохранения файла");
+    }
+    return pathC;
 }
 
 QStringList BulkDialog::duplicatedNames() const

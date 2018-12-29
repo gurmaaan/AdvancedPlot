@@ -7,4 +7,6 @@
     #define ACT_NAME "action_rule_"
     #define BTN_NAME "commandLinkButton_"
 
+    #define C_FILE_NAME "C.csv"
+
 #endif // STATIC_H

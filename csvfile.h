@@ -20,10 +20,12 @@ public:
     explicit CSVFile(QObject *parent = nullptr);
     CSVFile(const CSVFile &csv, QObject *parent = nullptr);
     CSVFile(QString path);
+    CSVFile(const QString &path, const QStringList &descriptorsNames, const QMap<QString, QVector<qreal> > &objects);
 
     QStandardItemModel *model() const;
     void setModel(QStandardItemModel *model);
 
+    void saveToFile();
     QString path() const;
     void setPath(const QString &path);
 
@@ -37,6 +39,7 @@ public:
     void setObjects(const QMap<QString, QVector<qreal> > &objects);
 
     CSVFile &operator=(const CSVFile &csv);
+    QString fileObjStr(QString objName);
 
 signals:
 
@@ -48,6 +51,9 @@ private:
     QChar delim_;
     QMap< QString, QVector<qreal> > objects_;
     QStandardItemModel *model_;
+    QStandardItemModel *genModel(QStringList descrNames, QMap< QString, QVector<qreal> > objcts);
+
+    QString fileHeaderStr();
 
     void loadFromFile(QString path);
     bool checkPath(QString path);

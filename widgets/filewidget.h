@@ -28,6 +28,8 @@ public:
 
 public slots:
     void setBtnVisible(bool status);
+    void setPath(QString filePath);
+    void receiveCSV(CSVFile file);
 
 signals:
     void modelChanged(QStandardItemModel *model);

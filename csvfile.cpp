@@ -19,6 +19,15 @@ CSVFile::CSVFile(QString path)
     loadFromFile(path);
 }
 
+CSVFile::CSVFile(const QString &path, const QStringList &descriptorsNames, const QMap<QString, QVector<qreal> > &objects)
+{
+    path_ = path;
+    descriptorsNames_ = descriptorsNames;
+    objects_ = objects;
+    delim_ = QChar(';');
+    model_ = genModel(descriptorsNames, objects);
+}
+
 QStandardItemModel *CSVFile::model() const
 {
     return model_;
@@ -27,6 +36,18 @@ QStandardItemModel *CSVFile::model() const
 void CSVFile::setModel(QStandardItemModel *model)
 {
     model_ = model;
+}
+
+void CSVFile::saveToFile()
+{
+    QFile file(path());
+    if(file.open(QIODevice::WriteOnly))
+    {
+        QTextStream textStream( &file );
+        textStream << fileHeaderStr() << endl;
+        for(QString objName : objects().keys())
+            textStream << fileObjStr(objName);
+    }
 }
 
 QString CSVFile::path() const
@@ -84,6 +105,69 @@ CSVFile &CSVFile::operator=(const CSVFile &csv)
     return *this;
 }
 
+QStandardItemModel *CSVFile::genModel(QStringList descrNames, QMap<QString, QVector<qreal> > objcts)
+{
+    QStandardItemModel *objModel = new QStandardItemModel;
+
+    for(QString headerStr : descrNames)
+    {
+        headerStr.insert(headerStr.count() / 2, '\n');
+        QStandardItem *hHItem = new QStandardItem(headerStr);
+        makeHeader(hHItem, Qt::Horizontal);
+        objModel->setHorizontalHeaderItem(objModel->columnCount(), hHItem);
+    }
+
+    for(QString objName : objcts.keys())
+    {
+        QList<QStandardItem*> objectAtR;
+
+        for(qreal d : objcts[objName])
+        {
+            QStandardItem *item = new QStandardItem(QString::number(d));
+            setAllTextData(item);
+            item->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
+            objectAtR << item;
+        }
+        objModel->appendRow(objectAtR);
+
+        QStandardItem *vHItem = new QStandardItem(objName);
+        makeHeader(vHItem, Qt::Vertical);
+        objModel->setVerticalHeaderItem(objModel->rowCount() - 1, vHItem);
+    }
+
+    return objModel;
+}
+
+QString CSVFile::fileHeaderStr()
+{
+    QString hStr = "    ;";
+    for(QString h : descriptorsNames())
+    {
+        if(h == descriptorsNames().last())
+            hStr = hStr + h;
+        else {
+            hStr = hStr + h + QString(";");
+        }
+    }
+    return  hStr;
+}
+
+QString CSVFile::fileObjStr(QString objName)
+{
+    QString row;
+    row = row + objName + QString(";");
+    QStringList descStrs;
+    for(qreal d : objects()[objName])
+    {
+        if(d == objects()[objName].last())
+            row = row + QString::number(d);
+        else {
+            row = row + QString::number(d) + QString(";");
+        }
+    }
+    return row;
+}
+
 void CSVFile::loadFromFile(QString path)
 {
     if( checkPath(path) )
@@ -93,7 +177,6 @@ void CSVFile::loadFromFile(QString path)
         QFile csvFile(path);
         csvFile.open(QFile::ReadOnly | QFile::Text);
         QTextStream in(&csvFile);
-        qDebug() << path << in.codec()->name();
         QString fileContentStr = in.readAll();
 
         //FIXME добавить автоматическое определение разделителя файла
@@ -110,8 +193,11 @@ void CSVFile::loadFromFile(QString path)
 
         for(QString headerStr : firstRowCols)
         {
-            headerStr.insert(headerStr.count() / 2, '\n');
-            QStandardItem *hHItem = new QStandardItem(headerStr);
+            QStandardItem *hHItem = new QStandardItem;
+            hHItem->setWhatsThis(headerStr);
+            hHItem->setStatusTip(headerStr);
+            //headerStr.insert(headerStr.count() / 2, '\n');
+            hHItem->setText(headerStr);
             makeHeader(hHItem, Qt::Horizontal);
             mod->setHorizontalHeaderItem(mod->columnCount(), hHItem);
         }

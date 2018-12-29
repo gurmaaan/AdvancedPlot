@@ -14,15 +14,18 @@
    <string>Мастер построения графиков</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="src.qrc">
+   <iconset resource="../src.qrc">
     <normaloff>:/icons/favicon.png</normaloff>:/icons/favicon.png</iconset>
+  </property>
+  <property name="documentMode">
+   <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <property name="documentMode">
        <bool>false</bool>
@@ -65,7 +68,7 @@
       </widget>
       <widget class="QWidget" name="plot_tab">
        <attribute name="title">
-        <string>Plot</string>
+        <string>График</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
@@ -99,7 +102,7 @@
   <widget class="QDockWidget" name="file_dock">
    <property name="minimumSize">
     <size>
-     <width>200</width>
+     <width>400</width>
      <height>184</height>
     </size>
    </property>
@@ -121,54 +124,11 @@
       <widget class="FileWidget" name="fileA_widget" native="true"/>
      </item>
      <item>
-      <widget class="FileWidget" name="fileB_widget" native="true"/>
-     </item>
-     <item>
       <widget class="Line" name="file_h_line">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
       </widget>
-     </item>
-     <item>
-      <widget class="FileWidget" name="fileC_widget" native="true"/>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="save_H_lyt">
-       <item>
-        <spacer name="save_lh_spcr">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="save_btn">
-         <property name="text">
-          <string>Сохранить</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="save_rh_spcr">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
      </item>
      <item>
       <spacer name="file_v_spcr">
@@ -188,12 +148,12 @@
   </widget>
   <widget class="QDockWidget" name="plot_dock">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="minimumSize">
     <size>
-     <width>200</width>
-     <height>200</height>
+     <width>400</width>
+     <height>400</height>
     </size>
    </property>
    <property name="features">
@@ -209,34 +169,65 @@
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="plotDock_cntnt">
-    <layout class="QVBoxLayout" name="verticalLayout_6">
+    <layout class="QVBoxLayout" name="verticalLayout_7">
      <item>
-      <layout class="QFormLayout" name="formLayout">
+      <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <widget class="QLabel" name="x_lbl">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>Ось X</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
+         <property name="buddy">
+          <cstring>x_cb</cstring>
+         </property>
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QComboBox" name="x_cb"/>
+        <widget class="QComboBox" name="x_cb">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="y_lbl">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>Ось Y</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
+         <property name="buddy">
+          <cstring>y_cb</cstring>
+         </property>
         </widget>
        </item>
        <item row="1" column="1">
         <widget class="QComboBox" name="y_cb">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="currentText">
           <string/>
          </property>
@@ -244,31 +235,174 @@
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="dx_lbl">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>Погрешность X</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
+         <property name="buddy">
+          <cstring>dx_cb</cstring>
+         </property>
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QComboBox" name="dx_cb"/>
+        <widget class="QComboBox" name="dx_cb">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="ColorButton" name="dxClr" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>40</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item row="3" column="0">
         <widget class="QLabel" name="dy_lbl">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>Погрешность Y</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
+         <property name="buddy">
+          <cstring>dy_cb</cstring>
+         </property>
         </widget>
        </item>
        <item row="3" column="1">
-        <widget class="QComboBox" name="dy_cb"/>
+        <widget class="QComboBox" name="dy_cb">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="ColorButton" name="dyClr" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>40</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>Точки</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="pointSize_lbl">
+            <property name="text">
+             <string>Размер: </string>
+            </property>
+            <property name="buddy">
+             <cstring>pointSize_H_sld</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSlider" name="pointSize_H_sld">
+            <property name="maximum">
+             <number>10</number>
+            </property>
+            <property name="value">
+             <number>1</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="pointSize_sb">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::NoButtons</enum>
+            </property>
+            <property name="suffix">
+             <string> px</string>
+            </property>
+            <property name="value">
+             <number>1</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="ColorButton" name="pointClr" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
      </item>
      <item>
       <layout class="QHBoxLayout" name="buld_lyt">
@@ -308,7 +442,7 @@
       </layout>
      </item>
      <item>
-      <spacer name="verticalSpacer">
+      <spacer name="plot_V_spcr">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -338,9 +472,32 @@
    <header>widgets/filewidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>ColorButton</class>
+   <extends>QWidget</extends>
+   <header>widgets/colorbutton.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources>
-  <include location="src.qrc"/>
+  <include location="../src.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pointSize_H_sld</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>pointSize_sb</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>305</x>
+     <y>626</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>371</x>
+     <y>622</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

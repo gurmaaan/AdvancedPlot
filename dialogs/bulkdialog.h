@@ -4,6 +4,9 @@
 #include <QDialog>
 #include <QAction>
 #include <QBitArray>
+#include <QDir>
+#include <QIODevice>
+#include <QFileDialog>
 
 #include "csvfile.h"
 #include "static.h"
@@ -33,6 +36,9 @@ public slots:
     void setDuplicatesFound(bool duplicatesFound);
     void setFilesNotEmpty(bool filesNotEmpty);
 
+signals:
+    void fileCompleted(CSVFile file);
+
 private slots:
     void on_action_rule_1_triggered();
     void on_action_rule_2_triggered();
@@ -61,6 +67,7 @@ private:
 
     QBitArray activeAct_;
     void actionsActivating(const QBitArray &activeAct);
+    QString genPath(QString pathA, QString pathB, QString nameC);
 };
 
 #endif // BULKDIALOG_H

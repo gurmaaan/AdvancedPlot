@@ -30,7 +30,8 @@ SOURCES += \
         dialogs/bulkdialog.cpp \
         widgets/qcustomplot.cpp \
         widgets/filewidget.cpp \
-        csvfile.cpp
+        csvfile.cpp \
+    widgets/colorbutton.cpp
 
 HEADERS += \
         static.h \
@@ -38,12 +39,14 @@ HEADERS += \
         dialogs/bulkdialog.h \
         widgets/qcustomplot.h \
         widgets/filewidget.h \
-        csvfile.h
+        csvfile.h \
+    widgets/colorbutton.h
 
 FORMS += \
-        mainwindow.ui \
+        dialogs/mainwindow.ui \
         dialogs/bulkdialog.ui \
-        widgets/filewidget.ui
+        widgets/filewidget.ui \
+    widgets/colorbutton.ui
 
 win32: RC_FILE = iconsource.rc
 

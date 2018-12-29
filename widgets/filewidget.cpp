@@ -88,3 +88,16 @@ void FileWidget::setBtnVisible(bool status)
 {
     ui->file_btn->setVisible(status);
 }
+
+void FileWidget::setPath(QString filePath)
+{
+    ui->file_le->setText(filePath);
+}
+
+void FileWidget::receiveCSV(CSVFile file)
+{
+    setCsv(file);
+    ui->file_le->setText(file.path());
+    ui->descrCnt_sb->setValue(file.model()->columnCount());
+    ui->objctsCnt_sb->setValue(file.model()->rowCount());
+}

@@ -44,6 +44,7 @@ void MainWindow::runCgen(bool status)
     else if(allCompleted)
     {
         curInd = 2;
+        //BUG
 //        ui->tabWidget->setTabText( curInd, cW_->fileName() );
     }
     ui->tabWidget->setCurrentIndex(curInd);
@@ -64,14 +65,17 @@ void MainWindow::connectAll()
     connect(cW_, &FileWidget::modelChanged,
             ui->fileC_tv, &QTableView::setModel);
 
-    connect(aW_, &FileWidget::modelChanged,
-            ui->xAxis, &AxisWidget::setModel);
-    connect(aW_, &FileWidget::modelChanged,
-            ui->yAxis, &AxisWidget::setModel);
-    connect(aW_, &FileWidget::modelChanged,
-            ui->dxAxis, &AxisWidget::setModel);
-    connect(aW_, &FileWidget::modelChanged,
-            ui->dyAxis, &AxisWidget::setModel);
+    connect(cW_, &FileWidget::modelChanged,
+            this, &MainWindow::setAxisModel);
+
+    connect(ui->xAxis, &AxisWidget::currentIndexChanged,
+            this, &MainWindow::scrollAndSelect);
+    connect(ui->yAxis, &AxisWidget::currentIndexChanged,
+            this, &MainWindow::scrollAndSelect);
+    connect(ui->dxAxis, &AxisWidget::currentIndexChanged,
+            this, &MainWindow::scrollAndSelect);
+    connect(ui->dyAxis, &AxisWidget::currentIndexChanged,
+            this, &MainWindow::scrollAndSelect);
 
     connect(bulkDialog_, &BulkDialog::fileCompleted,
             cW_, &FileWidget::receiveCSV);
@@ -93,14 +97,25 @@ void MainWindow::setupWidgets()
     ui->xAxis->setT(AxisType::XAxis);
     ui->yAxis->setT(AxisType::YAxis);
     ui->dxAxis->setT(AxisType::dXAxis);
+    ui->dxAxis->setColor(QColor(Qt::black));
     ui->dyAxis->setT(AxisType::dYAxis);
+    ui->dyAxis->setColor(QColor(Qt::black));
+    ui->pointClr->setColor(QColor(Qt::red));
 }
 
 void MainWindow::scrollAndSelect(int colNum)
 {
-    QAbstractItemModel *aM = ui->fileA_tv->model();
-    ui->fileA_tv->scrollTo(aM->index(0,colNum));
+    QAbstractItemModel *cM = ui->fileC_tv->model();
+    ui->fileA_tv->scrollTo(cM->index(0,colNum));
     ui->fileA_tv->selectColumn(colNum);
+}
+
+void MainWindow::setAxisModel(QStandardItemModel *m)
+{
+    ui->xAxis->setModel(m);
+    ui->yAxis->setModel(m);
+    ui->dxAxis->setModel(m);
+    ui->dyAxis->setModel(m);
 }
 
 void MainWindow::on_build_btn_clicked()
@@ -113,21 +128,38 @@ void MainWindow::on_build_btn_clicked()
     plot->legend->setFont(QFont("Helvetica", 9));
     plot->xAxis->setLabel(ui->xAxis->name());
     plot->yAxis->setLabel(ui->yAxis->name());
+    plot->xAxis->setRange( ui->xAxis->min(), ui->xAxis->max());
+    plot->yAxis->setRange( ui->yAxis->min(), ui->yAxis->max() );
+
 
     plot->addGraph();
     plot->graph(0)->setPen(QPen(ui->pointClr->color()));
     plot->graph(0)->setLineStyle(QCPGraph::lsNone);
     plot->graph(0)->setScatterStyle( QCPScatterStyle( QCPScatterStyle::ssDisc, ui->pointSize_sb->value() ) );
+    plot->graph(0)->setData(ui->xAxis->values(), ui->yAxis->values());
     plot->graph(0)->setName("Dependance " + ui->yAxis->name() + " of " + ui->xAxis->name() );
 
-    QCPErrorBars *errorBars = new QCPErrorBars(plot->xAxis, plot->yAxis);
-    errorBars->removeFromLegend();
-    errorBars->setAntialiased(false);
-    errorBars->setDataPlottable(plot->graph(0));
-    errorBars->setPen(QPen(ui->dyAxis->getColor()));
+    QCPErrorBars *yErrorBar = new QCPErrorBars(plot->xAxis, plot->yAxis);
+    QCPErrorBars *xErrorBar = new QCPErrorBars(plot->xAxis, plot->yAxis);
 
-    plot->graph(0)->setData(ui->xAxis->values(), ui->yAxis->values());
-    errorBars->setData(ui->dyAxis->values());
+    yErrorBar->setErrorType(QCPErrorBars::ErrorType::etValueError);
+    xErrorBar->setErrorType(QCPErrorBars::ErrorType::etKeyError);
+
+    yErrorBar->removeFromLegend();
+    xErrorBar->removeFromLegend();
+
+    yErrorBar->setAntialiased(false);
+    xErrorBar->setAntialiased(false);
+
+    yErrorBar->setDataPlottable(plot->graph(0));
+    xErrorBar->setDataPlottable(plot->graph(0));
+
+    yErrorBar->setPen(QPen(ui->dyAxis->color()));
+    xErrorBar->setPen(QPen(ui->dxAxis->color()));
+
+    yErrorBar->setData(ui->dyAxis->values());
+    xErrorBar->setData(ui->dxAxis->values());
+
     plot->graph(0)->rescaleAxes(true);
 
     plot->axisRect()->setupFullAxesBox();

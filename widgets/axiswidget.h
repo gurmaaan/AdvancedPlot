@@ -43,19 +43,26 @@ public:
     double av() const;
     void setAv(double av);
 
-    QColor getColor();
     QString name();
+
+    QColor color() const;
+    void setColor(const QColor &color);
+
+signals:
+    void currentIndexChanged(int index);
 public slots:
     void setModel(QStandardItemModel *model);
+    void on_axis_cb_currentIndexChanged(int index);
 
 private slots:
-    void on_axis_cb_currentIndexChanged(int index);
+
 
 private:
     Ui::AxisWidget *ui;
     AxisType t_;
     QStandardItemModel *model_;
     QVector<double> values_;
+    QColor color_;
     void typeProxy(AxisType type);
     double min_;
     double max_;

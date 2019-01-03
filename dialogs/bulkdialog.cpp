@@ -163,13 +163,7 @@ bool BulkDialog::compareDescriptors(CSVFile aF, CSVFile bF)
     aDescrList.sort();
     bDescrList.sort();
 
-    for(int i = 0; i < aDescrList.count(); i++)
-    {
-        qDebug() << aDescrList.at(i) << " : " << bDescrList.at(i);
-    }
-    //FIXME кривое определение дескрипторов
-    bool dE = (aF.model()->columnCount() == bF.model()->columnCount());
-    qDebug() << dE << aF.model()->columnCount() << bF.model()->columnCount();
+    bool dE = (aDescrList == bDescrList);
     return dE;
 }
 
@@ -273,7 +267,6 @@ void BulkDialog::copyItems(QStandardItemModel *sourceModel, QStandardItemModel *
         {
             condition = oneOfDuplicated(originalObjNameAtI, duplicates);
             originalObjNameAtI = originalObjNameAtI + suffix;
-            qDebug() << onlyDuplicates << originalObjNameAtI << condition;
         }
         else
         {
@@ -284,11 +277,12 @@ void BulkDialog::copyItems(QStandardItemModel *sourceModel, QStandardItemModel *
             continue;
         else
         {
-            QList<QStandardItem*> rowSourceAtI = sourceModel->takeRow(i);
+            QList<QStandardItem*> rowSourceAtI;
             QList<QStandardItem*> rowCopyAtI;
-            for(QStandardItem *aIt : rowSourceAtI)
+
+            for(int j = 0; j < sourceModel->columnCount(); j++)
             {
-                QStandardItem *cIt = aIt->clone();
+                QStandardItem *cIt = sourceModel->item(i, j)->clone();
                 rowCopyAtI << cIt;
             }
             targetModel->appendRow(rowCopyAtI);

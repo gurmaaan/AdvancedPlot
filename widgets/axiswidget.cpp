@@ -25,12 +25,31 @@ void AxisWidget::setClrBtnVisible(bool state)
 
 void AxisWidget::on_axis_cb_currentIndexChanged(int index)
 {
-    QList<QStandardItem*> column = model_->takeColumn(index);
+    emit currentIndexChanged(index);
     QVector<double> valVec;
-    for(QStandardItem* item : column)
-        valVec << item->data(Qt::UserRole).toDouble();
-
+    for(int i = 0 ; i < model_->rowCount(); i++)
+    {
+        QString sV = model_->data( model_->index(i,index)).toString();
+        sV.replace(QChar(','), QChar('.'));
+        double dV = sV.toDouble();
+        valVec.append(dV);
+    }
     setValues(valVec);
+}
+
+QColor AxisWidget::color() const
+{
+    if(ui->clr_btn->isVisible())
+        return ui->clr_btn->color();
+    else {
+        return QColor(Qt::white);
+    }
+}
+
+void AxisWidget::setColor(const QColor &color)
+{
+    color_ = color;
+    ui->clr_btn->setColor(color);
 }
 
 void AxisWidget::typeProxy(AxisType type)
@@ -38,7 +57,7 @@ void AxisWidget::typeProxy(AxisType type)
     QString axisName = "";
     switch (type)
     {
-        case AxisType::XAxis:
+    case AxisType::XAxis:
         {
             axisName = "X: ";
             setClrBtnVisible(false);
@@ -75,15 +94,6 @@ void AxisWidget::setAv(double av)
 {
     av_ = av;
     ui->av_le->setText(QString::number(av));
-}
-
-QColor AxisWidget::getColor()
-{
-    if(ui->clr_btn->isVisible())
-        return ui->clr_btn->color();
-    else {
-        return QColor(Qt::white);
-    }
 }
 
 QString AxisWidget::name()
@@ -128,8 +138,8 @@ void AxisWidget::setModel(QStandardItemModel *model)
 {
     model_ = model;
     QStringList modelHHeaders;
-    for(int i = 0; i < model->columnCount(); i++)
-        modelHHeaders << model->headerData(i, Qt::Horizontal).toString();
+    for(int i = 0; i < model_->columnCount(); i++)
+        modelHHeaders << model_->headerData(i, Qt::Horizontal).toString();
     ui->axis_cb->addItems(modelHHeaders);
 }
 

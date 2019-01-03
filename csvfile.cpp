@@ -142,14 +142,22 @@ QString CSVFile::getObjStr(QString objName)
 {
     QString row = "";
     row = objName + delim();
+    int rowNum = 0;
 
-    QList<QStandardItem*> modelRow = model_->takeRow( objNames().indexOf(objName) );
-    for(QStandardItem *item :  modelRow)
+    for(int i = 0; i < model_->rowCount(); i++)
     {
-       if( item == modelRow.last() )
-           row = row + item->text();
-       else
-           row = row + item->text() + delim();
+        if(model_->data(model_->index(i, 0)).toString() == objName)
+        {
+            rowNum = i;
+            break;
+        }
+    }
+
+    for(int j = 0; j < model_->columnCount(); j++)
+    {
+        row = row + model_->data(model_->index(rowNum, j)).toString();
+        if( !(j == model_->columnCount() - 1) )
+            row = row + delim();
     }
     return row;
 }

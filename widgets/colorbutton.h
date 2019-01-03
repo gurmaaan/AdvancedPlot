@@ -22,6 +22,7 @@ public:
 public slots:
     void setText(QString text);
 
+
 private slots:
     void on_toolButton_clicked();
 

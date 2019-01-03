@@ -25,6 +25,7 @@ public:
 public slots:
     void runCgen(bool status);
     void scrollAndSelect(int colNum = 0);
+    void setAxisModel(QStandardItemModel *m);
 
 private slots:
     void on_build_btn_clicked();

@@ -29,6 +29,9 @@ public slots:
 
 private slots:
     void on_build_btn_clicked();
+
+    void on_split_gb_clicked(bool checked);
+
 private:
     Ui::MainWindow *ui;
     BulkDialog *bulkDialog_;

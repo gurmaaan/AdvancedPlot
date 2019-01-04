@@ -9,4 +9,8 @@
 
     #define C_FILE_NAME "C.csv"
 
+    #define DEPENDANCE "Зависимость "
+    #define DEPOF " от "
+    #define SPLITNAME "Разделяющая прямая"
+
 #endif // STATIC_H

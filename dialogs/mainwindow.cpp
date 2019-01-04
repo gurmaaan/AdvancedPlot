@@ -101,6 +101,7 @@ void MainWindow::setupWidgets()
     ui->dyAxis->setT(AxisType::dYAxis);
     ui->dyAxis->setColor(QColor(Qt::black));
     ui->pointClr->setColor(QColor(Qt::red));
+    ui->splitClr->setColor(QColor(Qt::blue));
 }
 
 void MainWindow::scrollAndSelect(int colNum)
@@ -129,7 +130,7 @@ void MainWindow::on_build_btn_clicked()
     plot->xAxis->setLabel(ui->xAxis->name());
     plot->yAxis->setLabel(ui->yAxis->name());
     plot->xAxis->setRange( ui->xAxis->min(), ui->xAxis->max());
-    plot->yAxis->setRange( ui->yAxis->min(), ui->yAxis->max() );
+    plot->yAxis->setRange( ui->yAxis->min(), ui->yAxis->max());
 
 
     plot->addGraph();
@@ -137,7 +138,7 @@ void MainWindow::on_build_btn_clicked()
     plot->graph(0)->setLineStyle(QCPGraph::lsNone);
     plot->graph(0)->setScatterStyle( QCPScatterStyle( QCPScatterStyle::ssDisc, ui->pointSize_sb->value() ) );
     plot->graph(0)->setData(ui->xAxis->values(), ui->yAxis->values());
-    plot->graph(0)->setName("Dependance " + ui->yAxis->name() + " of " + ui->xAxis->name() );
+    plot->graph(0)->setName(DEPENDANCE + ui->yAxis->name() + DEPOF + ui->xAxis->name() );
 
     QCPErrorBars *yErrorBar = new QCPErrorBars(plot->xAxis, plot->yAxis);
     QCPErrorBars *xErrorBar = new QCPErrorBars(plot->xAxis, plot->yAxis);
@@ -164,5 +165,25 @@ void MainWindow::on_build_btn_clicked()
 
     plot->axisRect()->setupFullAxesBox();
 
+    plot->replot();
+}
+
+void MainWindow::on_split_gb_clicked(bool checked)
+{
+    if(checked)
+    {
+        plot->addGraph();
+        QVector<double> xValues;
+        xValues << ui->xAxis->min() << ui->xAxis->max();
+        QVector<double> yValues;
+        yValues << ui->yAxis->max() << ui->yAxis->min();
+        plot->graph(1)->setPen(QPen(ui->splitClr->color(), ui->splitSize_sb->value()));
+        plot->graph(1)->setLineStyle(QCPGraph::lsLine);
+        plot->graph(1)->setData(xValues, yValues);
+        plot->graph(1)->setName(SPLITNAME);
+    } else
+    {
+        plot->removeGraph(1);
+    }
     plot->replot();
 }

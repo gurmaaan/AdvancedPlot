@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>872</width>
+    <width>947</width>
     <height>1427</height>
    </rect>
   </property>
@@ -81,36 +81,6 @@
           </property>
          </widget>
         </item>
-        <item>
-         <layout class="QHBoxLayout" name="split_H_lyt">
-          <item>
-           <widget class="QCheckBox" name="split_cb">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Разделяющая прямая</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="split_H_spcr">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
        </layout>
       </widget>
      </widget>
@@ -122,7 +92,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>872</width>
+     <width>947</width>
      <height>21</height>
     </rect>
    </property>
@@ -242,10 +212,10 @@
     <string>График</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>1</number>
+    <number>2</number>
    </attribute>
    <widget class="QWidget" name="plotDock_cntnt">
-    <layout class="QVBoxLayout" name="verticalLayout_8">
+    <layout class="QVBoxLayout" name="verticalLayout_9">
      <item>
       <widget class="AxisWidget" name="xAxis" native="true"/>
      </item>
@@ -321,6 +291,91 @@
           </item>
           <item>
            <spacer name="pointsClr_H_spcr">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="split_gb">
+       <property name="title">
+        <string>Разделяющая прямая</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <layout class="QHBoxLayout" name="splitSize_H_lyt">
+          <item>
+           <widget class="QLabel" name="splitSize_lbl">
+            <property name="text">
+             <string>Размер: </string>
+            </property>
+            <property name="buddy">
+             <cstring>pointSize_H_sld</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSlider" name="splitSize_H_sldr">
+            <property name="maximum">
+             <number>10</number>
+            </property>
+            <property name="value">
+             <number>1</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="splitSize_sb">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::NoButtons</enum>
+            </property>
+            <property name="suffix">
+             <string> px</string>
+            </property>
+            <property name="value">
+             <number>1</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="splitClr_H_lyt">
+          <item>
+           <widget class="ColorButton" name="splitClr" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="splitClr_H_spr">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -429,12 +484,28 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>305</x>
-     <y>626</y>
+     <x>888</x>
+     <y>173</y>
     </hint>
     <hint type="destinationlabel">
-     <x>371</x>
-     <y>622</y>
+     <x>926</x>
+     <y>172</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>splitSize_H_sldr</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>splitSize_sb</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>713</x>
+     <y>249</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>910</x>
+     <y>259</y>
     </hint>
    </hints>
   </connection>

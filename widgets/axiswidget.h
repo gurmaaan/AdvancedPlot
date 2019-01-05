@@ -48,6 +48,8 @@ public:
     QColor color() const;
     void setColor(const QColor &color);
 
+    void setCurInd(int index);
+
 signals:
     void currentIndexChanged(int index);
 public slots:

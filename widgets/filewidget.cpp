@@ -18,7 +18,7 @@ void FileWidget::on_file_btn_clicked()
 {
     QString openLocation = requiredPath(QDir::current(), DATA_LOCATION, QStandardPaths::DocumentsLocation);
     QString filePath = QFileDialog::getOpenFileName(nullptr, "Выберите CSV файл", openLocation, FILE_TYPE);
-    ui->file_le->setText(filePath);
+    setPath(filePath);
 
     CSVFile csvFile(filePath);
     setCsv(csvFile);
@@ -106,5 +106,20 @@ void FileWidget::receiveCSV(CSVFile file)
     setupSB(ui->objctsCnt_sb, file.model()->rowCount());
 
     emit modelChanged(file.model());
+    setParsingState(true);
+}
+
+void FileWidget::processFile(QString filePath)
+{
+    setPath(filePath);
+
+    CSVFile csvFile(filePath);
+    setCsv(csvFile);
+
+    setupSB(ui->descrCnt_sb, csvFile.model()->columnCount());
+    setupSB(ui->objctsCnt_sb, csvFile.model()->rowCount());
+    ui->fCfR_le->setText(csvFile.getFRfCstr());
+
+    emit modelChanged(csvFile.model());
     setParsingState(true);
 }

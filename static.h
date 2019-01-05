@@ -8,6 +8,8 @@
     #define BTN_NAME "commandLinkButton_"
 
     #define C_FILE_NAME "C.csv"
+    #define A_FILE_PATH "C:/Users/Dima/YandexDisk/EDUCATION/_VIDEO/_AdvancedPlot/data/A.csv"
+    #define B_FILE_PATH "C:/Users/Dima/YandexDisk/EDUCATION/_VIDEO/_AdvancedPlot/data/B(dub-true).csv"
 
     #define DEPENDANCE "Зависимость "
     #define DEPOF " от "

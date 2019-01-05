@@ -52,6 +52,11 @@ void AxisWidget::setColor(const QColor &color)
     ui->clr_btn->setColor(color);
 }
 
+void AxisWidget::setCurInd(int index)
+{
+    ui->axis_cb->setCurrentIndex(index);
+}
+
 void AxisWidget::typeProxy(AxisType type)
 {
     QString axisName = "";

@@ -7,8 +7,10 @@
 #include <QComboBox>
 //
 #include "csvfile.h"
+#include "static.h"
 #include <widgets/qcustomplot.h>
 #include "widgets/filewidget.h"
+#include "widgets/axiswidget.h"
 #include "dialogs/bulkdialog.h"
 
 namespace Ui {
@@ -38,19 +40,34 @@ private slots:
     void on_actionDebug_triggered();
     void setComboBoxes();
 
+    void on_hDelta_H_sldr_sliderMoved(int position);
+
+    void on_vDelta_H_sldr_sliderMoved(int position);
+
 private:
     Ui::MainWindow *ui;
     BulkDialog *bulkDialog_;
-    void connectAll();
-    void setupWidgets();
     FileWidget *aW_;
     FileWidget *bW_;
     FileWidget *cW_;
     double oldAngle_;
-    QCustomPlot *plot;
+    QCustomPlot *plot_;
+
+    void connectAll();
+    void setupWidgets();
+
     double calcDelta(int newAngle, double y11);
+
+    QString kStr(AxisWidget *xA, AxisWidget *yA);
     QString kStr(double x1, double x2, double y1, double y2);
+    QString bStr(AxisWidget *xA, AxisWidget *yA);
     QString bStr(double x1, double x2, double y1, double y2);
+    void setLineEq(AxisWidget *xA, AxisWidget *yA);
+    void setLineEq(double x1, double x2, double y1, double y2);
+
+    void addError(QCustomPlot *plotVie, AxisWidget *axis);
+    void setupAxis(QCustomPlot *plotVie, AxisWidget *axis);
+    void setupDelta(QSlider *slider, AxisWidget *axis);
 };
 
 #endif // MAINWINDOW_H

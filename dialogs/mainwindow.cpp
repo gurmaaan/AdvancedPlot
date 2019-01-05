@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     bW_ = ui->fileB_widget;
     cW_ = ui->fileC_widget;
 
-    plot = ui->plot_view;
+    plot_ = ui->plot_view;
     setupWidgets();
     connectAll();
     showMaximized();
@@ -94,6 +94,9 @@ void MainWindow::setupWidgets()
     cW_->setEnabled(false);
     cW_->setBtnVisible(false);
 
+    //NOTE : включение / отключение дебага
+    ui->debug_btn->setVisible(false);
+
     ui->xAxis->setT(AxisType::XAxis);
     ui->yAxis->setT(AxisType::YAxis);
     ui->dxAxis->setT(AxisType::dXAxis);
@@ -109,7 +112,6 @@ double MainWindow::calcDelta(int newAngle, double y11)
     //Треугольник A(0;0), B(x11;y11), C(x21;y21). Ищем x21 = x11 - BC. Возвращаем BC.
     double ctg1 = 1.0 / qTan( qDegreesToRadians( static_cast<double>(oldAngle()) ) );
     double ctg2 = 1.0 / qTan( qDegreesToRadians( static_cast<double>(newAngle  ) ) );
-    qDebug() << ctg1 << ctg2;
     double delta = y11*(ctg1 - ctg2);
     return delta;
 }
@@ -124,6 +126,17 @@ void MainWindow::setOldAngle(double oldAngle)
     oldAngle_ = oldAngle;
 }
 
+QString MainWindow::kStr(AxisWidget *xA, AxisWidget *yA)
+{
+    double x1,x2,y1,y2;
+    x1 = xA->max();
+    x2 = xA->min();
+    y1 = yA->min();
+    y2 = yA->max();
+
+    return kStr(x1,x2,y1,y2);
+}
+
 QString MainWindow::kStr(double x1, double x2, double y1, double y2)
 {
     double ax, by;
@@ -131,6 +144,17 @@ QString MainWindow::kStr(double x1, double x2, double y1, double y2)
     by = y2 - y1;
     QString kString = QString::number(ax/by);
     return kString;
+}
+
+QString MainWindow::bStr(AxisWidget *xA, AxisWidget *yA)
+{
+    double x1,x2,y1,y2;
+    x1 = xA->max();
+    x2 = xA->min();
+    y1 = yA->min();
+    y2 = yA->max();
+
+    return bStr(x1,x2,y1,y2);
 }
 
 QString MainWindow::bStr(double x1, double x2, double y1, double y2)
@@ -141,6 +165,49 @@ QString MainWindow::bStr(double x1, double x2, double y1, double y2)
     double blyat = ( y2 * (ax/by) ) - ( x2 * (ax/by) );
     QString bString = QString::number(blyat);
     return bString;
+}
+
+void MainWindow::setLineEq(AxisWidget *xA, AxisWidget *yA)
+{
+    ui->lineEq_k->setText(kStr(xA, yA));
+    ui->lineEq_b->setText(bStr(xA, yA));
+}
+
+void MainWindow::setLineEq(double x1, double x2, double y1, double y2)
+{
+    ui->lineEq_k->setText(kStr(x1, x2, y1, y2));
+    ui->lineEq_b->setText(bStr(x1, x2, y1, y2));
+}
+
+void MainWindow::addError(QCustomPlot *plotVie, AxisWidget *axis)
+{
+    QCPErrorBars *errorBar = new QCPErrorBars(plotVie->xAxis, plotVie->yAxis);
+    QCPErrorBars::ErrorType et = ( axis == ui->dxAxis) ? QCPErrorBars::ErrorType::etKeyError
+                                                       : QCPErrorBars::ErrorType::etValueError;
+    errorBar->setErrorType(et);
+    errorBar->removeFromLegend();
+    errorBar->setAntialiased(false);
+    errorBar->setDataPlottable( plotVie->graph(plotVie->graphCount() - 1) );
+    errorBar->setPen(QPen(axis->color()));
+    errorBar->setData(axis->values());
+}
+
+void MainWindow::setupAxis(QCustomPlot *plotVie, AxisWidget *axis)
+{
+    QCPAxis *ax = (axis == ui->xAxis) ? plotVie->xAxis
+                                      : plotVie->yAxis;
+    ax->setLabel(axis->name());
+    ax->setRange( axis->min(), axis->max());
+}
+
+void MainWindow::setupDelta(QSlider *slider, AxisWidget *axis)
+{
+    int minV = static_cast<int>(axis->min() * 100.0);
+    int maxV = static_cast<int>(axis->max() * 100.0);
+    int curV = static_cast<int>(axis->av()  * 100.0);
+
+    slider->setRange(minV, maxV);
+    slider->setValue(curV);
 }
 
 void MainWindow::scrollAndSelect(int colNum)
@@ -160,59 +227,50 @@ void MainWindow::setAxisModel(QStandardItemModel *m)
 
 void MainWindow::on_build_btn_clicked()
 {
+    //Активирование таба с графиком + установка в фолс линию разделения
     ui->tabWidget->setCurrentIndex(3);
     ui->split_gb->setChecked(false);
-    plot->clearGraphs();
 
-    plot->legend->setVisible(true);
-    plot->legend->setFont(QFont("Helvetica", 12));
-    plot->xAxis->setLabel(ui->xAxis->name());
-    plot->yAxis->setLabel(ui->yAxis->name());
-    plot->xAxis->setRange( ui->xAxis->min(), ui->xAxis->max());
-    plot->yAxis->setRange( ui->yAxis->min(), ui->yAxis->max());
+    //Очистка графика
+    plot_->clearGraphs();
 
-    ui->lineEq_k->setText(kStr(ui->xAxis->max(), ui->xAxis->min(), ui->yAxis->min(), ui->yAxis->max()));
-    ui->lineEq_b->setText(bStr(ui->xAxis->max(), ui->xAxis->min(), ui->yAxis->min(), ui->yAxis->max()));
-    qreal alpha = ui->yAxis->max() / ui->xAxis->min();
-    int alphaAngle = static_cast<int>(qRadiansToDegrees(qAtan(alpha))) ;
-    setOldAngle(qRadiansToDegrees(qAtan(alpha)));
+    //Настройка легенды и осей
+    plot_->legend->setVisible(true);
+    plot_->legend->setFont(QFont("Helvetica", 8));
+    setupAxis(plot_, ui->xAxis);
+    setupAxis(plot_, ui->yAxis);
+
+    //Сосотавление уравнения прямой по умолчанию
+    setLineEq(ui->xAxis, ui->yAxis);
+
+    //Настройка угла прямой разделения
+    double tg = ui->yAxis->max() / ui->xAxis->min() ;
+    int alphaAngle = static_cast<int>( qRadiansToDegrees( qAtan(tg) ) ) ;
+    setOldAngle(qRadiansToDegrees( qAtan(tg) ));
     ui->angle_dial->setValue(alphaAngle);
     ui->angle_sb->setValue(alphaAngle);
 
-    plot->addGraph();
-    int grNum = plot->graphCount() - 1;
-    plot->graph(grNum)->setPen(QPen(ui->pointClr->color()));
-    plot->graph(grNum)->setLineStyle(QCPGraph::lsNone);
-    plot->graph(grNum)->setScatterStyle( QCPScatterStyle( QCPScatterStyle::ssDisc, ui->pointSize_sb->value() ) );
-    plot->graph(grNum)->setData(ui->xAxis->values(), ui->yAxis->values());
-    plot->graph(grNum)->setName(DEPENDANCE + ui->yAxis->name() + DEPOF + ui->xAxis->name() );
+    //Настройка смещений
+    setupDelta(ui->hDelta_H_sldr, ui->xAxis);
+    setupDelta(ui->vDelta_H_sldr, ui->yAxis);
 
-    QCPErrorBars *yErrorBar = new QCPErrorBars(plot->xAxis, plot->yAxis);
-    QCPErrorBars *xErrorBar = new QCPErrorBars(plot->xAxis, plot->yAxis);
+    //Добавление основных точек
+    plot_->addGraph();
+    int grNum = plot_->graphCount() - 1;
+    plot_->graph(grNum)->setPen(QPen(ui->pointClr->color()));
+    plot_->graph(grNum)->setLineStyle(QCPGraph::lsNone);
+    plot_->graph(grNum)->setScatterStyle( QCPScatterStyle( QCPScatterStyle::ssDisc, ui->pointSize_sb->value() ) );
+    plot_->graph(grNum)->setData(ui->xAxis->values(), ui->yAxis->values());
+    plot_->graph(grNum)->setName(DEPENDANCE + ui->yAxis->name() + DEPOF + ui->xAxis->name() );
 
-    yErrorBar->setErrorType(QCPErrorBars::ErrorType::etValueError);
-    xErrorBar->setErrorType(QCPErrorBars::ErrorType::etKeyError);
+    //Добавление ошибок
+    addError(plot_, ui->dxAxis);
+    addError(plot_, ui->dyAxis);
 
-    yErrorBar->removeFromLegend();
-    xErrorBar->removeFromLegend();
-
-    yErrorBar->setAntialiased(false);
-    xErrorBar->setAntialiased(false);
-
-    yErrorBar->setDataPlottable(plot->graph(grNum));
-    xErrorBar->setDataPlottable(plot->graph(grNum));
-
-    yErrorBar->setPen(QPen(ui->dyAxis->color()));
-    xErrorBar->setPen(QPen(ui->dxAxis->color()));
-
-    yErrorBar->setData(ui->dyAxis->values());
-    xErrorBar->setData(ui->dxAxis->values());
-
-    plot->graph(grNum)->rescaleAxes(true);
-
-    plot->axisRect()->setupFullAxesBox();
-
-    plot->replot();
+    //Обновление графика
+    plot_->graph(grNum)->rescaleAxes(true);
+    plot_->axisRect()->setupFullAxesBox();
+    plot_->replot();
 }
 
 void MainWindow::on_split_gb_clicked(bool checked)
@@ -220,7 +278,7 @@ void MainWindow::on_split_gb_clicked(bool checked)
     // Прямая через 1(xmin, ymax) - 2(xmax, ymin)
     if(checked)
     {
-        plot->addGraph();
+        plot_->addGraph();
 
         double xmax, xmin, ymax, ymin;
         xmax = ui->xAxis->max();
@@ -232,24 +290,24 @@ void MainWindow::on_split_gb_clicked(bool checked)
         xValues << xmin << xmax;
         yValues << ymax << ymin;
 
-        int grNum = (plot->graphCount() > 1) ? plot->graphCount() - 1 : 0;
+        int grNum = (plot_->graphCount() > 1) ? plot_->graphCount() - 1 : 0;
 
-        plot->graph(grNum)->setPen(QPen(ui->splitClr->color(), ui->splitSize_sb->value()));
-        plot->graph(grNum)->setLineStyle(QCPGraph::lsLine);
-        plot->graph(grNum)->setData(xValues, yValues);
-        plot->graph(grNum)->setName(SPLITNAME);
+        plot_->graph(grNum)->setPen(QPen(ui->splitClr->color(), ui->splitSize_sb->value()));
+        plot_->graph(grNum)->setLineStyle(QCPGraph::lsLine);
+        plot_->graph(grNum)->setData(xValues, yValues);
+        plot_->graph(grNum)->setName(SPLITNAME);
     } else
     {
-        plot->removeGraph(plot->graphCount() - 1);
+        plot_->removeGraph(plot_->graphCount() - 1);
     }
-    plot->replot();
+    plot_->replot();
 }
 
 void MainWindow::on_angle_dial_sliderMoved(int position)
 {
     // Прямая через 1(xmin, ymax) - 2(xmax, ymin)
-    int grNum = plot->graphCount() - 1;
-    plot->removeGraph(grNum);
+    int grNum = plot_->graphCount() - 1;
+    plot_->removeGraph(grNum);
 
     double xmax, xmin, ymax, ymin;
 
@@ -262,16 +320,15 @@ void MainWindow::on_angle_dial_sliderMoved(int position)
     xValues << xmin << xmax;
     yValues << ymax << ymin;
 
-    ui->lineEq_k->setText(kStr(xmin, xmax, ymax, ymin));
-    ui->lineEq_b->setText(bStr(xmin, xmax, ymax, ymin));
+    setLineEq(xmax, xmin, ymin, ymax);
 
-    plot->addGraph();
-    plot->graph(grNum)->setPen(QPen(ui->splitClr->color(), ui->splitSize_sb->value()));
-    plot->graph(grNum)->setLineStyle(QCPGraph::lsLine);
-    plot->graph(grNum)->setData(xValues, yValues);
-    plot->graph(grNum)->setName(SPLITNAME);
+    plot_->addGraph();
+    plot_->graph(grNum)->setPen(QPen(ui->splitClr->color(), ui->splitSize_sb->value()));
+    plot_->graph(grNum)->setLineStyle(QCPGraph::lsLine);
+    plot_->graph(grNum)->setData(xValues, yValues);
+    plot_->graph(grNum)->setName(SPLITNAME);
 
-    plot->replot();
+    plot_->replot();
 }
 
 void MainWindow::on_actionDebug_triggered()
@@ -291,10 +348,58 @@ void MainWindow::setComboBoxes()
 
 void MainWindow::on_hDelta_H_sldr_sliderMoved(int position)
 {
+    int grNum = plot_->graphCount() - 1;
+    plot_->removeGraph(grNum);
 
+    double xmax, xmin, ymax, ymin;
+
+    xmin = ui->xAxis->min() + calcDelta(ui->angle_dial->value(), ui->yAxis->max());
+    xmin = xmin + static_cast<double>(position / 100);
+    ymax = ui->yAxis->max();
+    ymin = ui->yAxis->min();
+    xmax = ui->xAxis->max() - calcDelta(ui->angle_dial->value() , ui->yAxis->max());
+    xmax = xmax + static_cast<double>(position / 100);
+
+    QVector<double> xValues, yValues;
+    xValues << xmin << xmax;
+    yValues << ymax << ymin;
+
+    setLineEq(xmax, xmin, ymin, ymax);
+
+    plot_->addGraph();
+    plot_->graph(grNum)->setPen(QPen(ui->splitClr->color(), ui->splitSize_sb->value()));
+    plot_->graph(grNum)->setLineStyle(QCPGraph::lsLine);
+    plot_->graph(grNum)->setData(xValues, yValues);
+    plot_->graph(grNum)->setName(SPLITNAME);
+
+    plot_->replot();
 }
 
 void MainWindow::on_vDelta_H_sldr_sliderMoved(int position)
 {
+    int grNum = plot_->graphCount() - 1;
+    plot_->removeGraph(grNum);
 
+    double xmax, xmin, ymax, ymin;
+
+    xmin = ui->xAxis->min() + calcDelta(ui->angle_dial->value(), ui->yAxis->max());
+    ymax = ui->yAxis->max();
+    ymax = ymax + static_cast<double>(position / 100);
+    ymin = ui->yAxis->min();
+    ymin = ymin + static_cast<double>(position / 100);
+    xmax = ui->xAxis->max() - calcDelta(ui->angle_dial->value(), ui->yAxis->max());
+
+    QVector<double> xValues, yValues;
+    xValues << xmin << xmax;
+    yValues << ymax << ymin;
+
+    setLineEq(xmax, xmin, ymin, ymax);
+
+    plot_->addGraph();
+    plot_->graph(grNum)->setPen(QPen(ui->splitClr->color(), ui->splitSize_sb->value()));
+    plot_->graph(grNum)->setLineStyle(QCPGraph::lsLine);
+    plot_->graph(grNum)->setData(xValues, yValues);
+    plot_->graph(grNum)->setName(SPLITNAME);
+
+    plot_->replot();
 }

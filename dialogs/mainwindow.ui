@@ -188,7 +188,7 @@
    <property name="minimumSize">
     <size>
      <width>400</width>
-     <height>494</height>
+     <height>505</height>
     </size>
    </property>
    <property name="features">
@@ -312,6 +312,33 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
+         <layout class="QHBoxLayout" name="splitClr_H_lyt">
+          <item>
+           <widget class="ColorButton" name="splitClr" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="splitClr_H_spr">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
          <layout class="QHBoxLayout" name="splitSize_H_lyt">
           <item>
            <widget class="QLabel" name="splitSize_lbl">
@@ -319,7 +346,7 @@
              <string>Размер: </string>
             </property>
             <property name="buddy">
-             <cstring>pointSize_H_sld</cstring>
+             <cstring>splitSize_H_sldr</cstring>
             </property>
            </widget>
           </item>
@@ -358,38 +385,21 @@
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="splitClr_H_lyt">
-          <item>
-           <widget class="ColorButton" name="splitClr" native="true">
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>0</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="splitClr_H_spr">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
+         <widget class="Line" name="split_H_line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QHBoxLayout" name="angle_H_lyt">
           <item>
            <widget class="QLabel" name="angle_lbl">
             <property name="text">
              <string>Угол наклона (между прямой и осью абцисс):</string>
+            </property>
+            <property name="buddy">
+             <cstring>angle_dial</cstring>
             </property>
            </widget>
           </item>
@@ -422,94 +432,66 @@
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="hDelta_H_lyt">
-          <item>
+         <layout class="QFormLayout" name="delta_formLyt">
+          <item row="0" column="0">
            <widget class="QLabel" name="hDelta_lbl">
             <property name="text">
              <string>Горизонтальный сдвиг:</string>
             </property>
-            <property name="buddy">
-             <cstring>pointSize_H_sld</cstring>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSlider" name="hDelta_H_sldr">
-            <property name="maximum">
-             <number>10</number>
-            </property>
-            <property name="value">
-             <number>1</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="hDelta_sb">
             <property name="alignment">
-             <set>Qt::AlignCenter</set>
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-            <property name="buttonSymbols">
-             <enum>QAbstractSpinBox::NoButtons</enum>
-            </property>
-            <property name="suffix">
-             <string/>
-            </property>
-            <property name="value">
-             <number>1</number>
+            <property name="buddy">
+             <cstring>hDelta_H_sldr</cstring>
             </property>
            </widget>
           </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="vDelta_H_lyt">
-          <item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="hDelta_H_lyt">
+            <item>
+             <widget class="QSlider" name="hDelta_H_sldr">
+              <property name="maximum">
+               <number>10</number>
+              </property>
+              <property name="value">
+               <number>1</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
            <widget class="QLabel" name="vDelta_lbl">
             <property name="text">
              <string>Вертикальный сдвиг:</string>
             </property>
-            <property name="buddy">
-             <cstring>pointSize_H_sld</cstring>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSlider" name="vDelta_H_sldr">
-            <property name="maximum">
-             <number>10</number>
-            </property>
-            <property name="value">
-             <number>1</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="vDelta_sb">
             <property name="alignment">
-             <set>Qt::AlignCenter</set>
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-            <property name="buttonSymbols">
-             <enum>QAbstractSpinBox::NoButtons</enum>
-            </property>
-            <property name="suffix">
-             <string/>
-            </property>
-            <property name="value">
-             <number>1</number>
+            <property name="buddy">
+             <cstring>vDelta_H_sldr</cstring>
             </property>
            </widget>
+          </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="vDelta_H_lyt">
+            <item>
+             <widget class="QSlider" name="vDelta_H_sldr">
+              <property name="maximum">
+               <number>10</number>
+              </property>
+              <property name="value">
+               <number>1</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -533,7 +515,6 @@
             <widget class="QLabel" name="lineEq_k">
              <property name="font">
               <font>
-               <pointsize>12</pointsize>
                <weight>75</weight>
                <bold>true</bold>
               </font>
@@ -570,7 +551,6 @@
             <widget class="QLabel" name="lineEq_b">
              <property name="font">
               <font>
-               <pointsize>12</pointsize>
                <weight>75</weight>
                <bold>true</bold>
               </font>
@@ -706,11 +686,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>888</x>
-     <y>173</y>
+     <y>140</y>
     </hint>
     <hint type="destinationlabel">
      <x>926</x>
-     <y>172</y>
+     <y>139</y>
     </hint>
    </hints>
   </connection>
@@ -722,11 +702,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>888</x>
-     <y>322</y>
+     <y>231</y>
     </hint>
     <hint type="destinationlabel">
      <x>926</x>
-     <y>321</y>
+     <y>230</y>
     </hint>
    </hints>
   </connection>
@@ -737,12 +717,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>662</x>
-     <y>265</y>
+     <x>889</x>
+     <y>317</y>
     </hint>
     <hint type="destinationlabel">
-     <x>778</x>
-     <y>270</y>
+     <x>926</x>
+     <y>302</y>
     </hint>
    </hints>
   </connection>

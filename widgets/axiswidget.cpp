@@ -121,6 +121,11 @@ QString AxisWidget::name()
     return ui->axis_cb->currentText();
 }
 
+int AxisWidget::curentIndex()
+{
+    return ui->axis_cb->currentIndex();
+}
+
 double AxisWidget::max() const
 {
     return max_;

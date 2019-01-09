@@ -48,6 +48,7 @@ public:
     void setAv(double av);
 
     QString name();
+    int curentIndex();
 
     QColor color() const;
     void setColor(const QColor &color);

@@ -72,7 +72,6 @@ void MainWindow::connectAll()
             this, &MainWindow::scrollAndSelect);
     connect(ui->yAxis, &AxisWidget::currentIndexChanged,
             this, &MainWindow::scrollAndSelect);
-
     connect(ui->dxAxis, &AxisWidget::currentIndexChanged,
             this, &MainWindow::scrollAndSelect);
     connect(ui->dyAxis, &AxisWidget::currentIndexChanged,
@@ -113,6 +112,21 @@ void MainWindow::setupWidgets()
     ui->pointsBClr->setColor(QColor(Qt::darkGreen));
     ui->pointsBClr->setText("Цвет точек файла В:");
     ui->splitClr->setColor(QColor(Qt::blue));
+}
+
+QVector<double> MainWindow::getPlotData(QStandardItemModel *model, int colIndex, QString suffix)
+{
+    QVector<double> vals;
+    for(int i = 0; i < model->rowCount(); i++)
+    {
+        QString objName = model->headerData(i, Qt::Vertical, Qt::DisplayRole).toString();
+        if(objName.right(1) == suffix)
+        {
+            QModelIndex index = model->index(i, colIndex);
+            vals << index.data(Qt::UserRole).toDouble();
+        }
+    }
+    return vals;
 }
 
 double MainWindow::calcDelta(int newAngle, double y11)
@@ -200,6 +214,17 @@ void MainWindow::addError(QCustomPlot *plotVie, AxisWidget *axis)
     errorBar->setData(axis->values());
 }
 
+void MainWindow::addPoints(QCustomPlot *plotVie, QVector<double> datax, QVector<double> datay, QColor clr, int size, QString name)
+{
+    plotVie->addGraph();
+    int gn = plotVie->graphCount() - 1;
+    plotVie->graph(gn)->setPen(QPen(clr));
+    plotVie->graph(gn)->setLineStyle(QCPGraph::lsNone);
+    plotVie->graph(gn)->setScatterStyle( QCPScatterStyle(QCPScatterStyle::ssDisc, size) );
+    plotVie->graph(gn)->setData(datax, datay);
+    plotVie->graph(gn)->setName(name);
+}
+
 void MainWindow::setupAxis(QCustomPlot *plotVie, AxisWidget *axis)
 {
     QCPAxis *ax = (axis == ui->xAxis) ? plotVie->xAxis
@@ -231,6 +256,20 @@ void MainWindow::setAxisModel(QStandardItemModel *m)
     ui->yAxis->setModel(m);
     ui->dxAxis->setModel(m);
     ui->dyAxis->setModel(m);
+
+    QVector<double> xAVals = getPlotData(m, 0, "A");
+    QVector<double> xBVals = getPlotData(m, 0, "B");
+
+    ui->pointsAAbsCnt_sb->setMaximum(m->rowCount());
+    ui->pointsBAbsCnt_sb->setMaximum(m->rowCount());
+    ui->pointsAAbsCnt_sb->setValue(xAVals.count());
+    ui->pointsBAbsCnt_sb->setValue(xBVals.count());
+
+    double total = static_cast<double>(m->rowCount());
+    double aC = static_cast<double>(xAVals.count());
+    double bC = static_cast<double>(xBVals.count());
+    ui->pointsACntPer_sb->setValue((aC / total) * 100.0);
+    ui->pointsBCntPer_sb->setValue((bC / total) * 100.0);
 }
 
 void MainWindow::on_build_btn_clicked()
@@ -263,13 +302,22 @@ void MainWindow::on_build_btn_clicked()
     setupDelta(ui->vDelta_H_sldr, ui->yAxis);
 
     //Добавление основных точек
-    plot_->addGraph();
-    int grNum = plot_->graphCount() - 1;
-    plot_->graph(grNum)->setPen(QPen(ui->pointsAClr->color()));
-    plot_->graph(grNum)->setLineStyle(QCPGraph::lsNone);
-    plot_->graph(grNum)->setScatterStyle( QCPScatterStyle( QCPScatterStyle::ssDisc, ui->pointSize_sb->value() ) );
-    plot_->graph(grNum)->setData(ui->xAxis->values(), ui->yAxis->values());
-    plot_->graph(grNum)->setName(DEPENDANCE + ui->yAxis->name() + DEPOF + ui->xAxis->name() );
+    QStandardItemModel *cModel = cW_->csv().model();
+    QVector<double> xAdata = getPlotData(cModel, ui->xAxis->curentIndex(), "A");
+    QVector<double> yAdata = getPlotData(cModel, ui->yAxis->curentIndex(), "A");
+    QVector<double> xBdata = getPlotData(cModel, ui->xAxis->curentIndex(), "B");
+    QVector<double> yBdata = getPlotData(cModel, ui->yAxis->curentIndex(), "B");
+
+    QString aName = DEPENDANCE + ui->yAxis->name() + DEPOF + ui->xAxis->name() + " для файла А";
+    QString bName = DEPENDANCE + ui->yAxis->name() + DEPOF + ui->xAxis->name() + " для файла B";
+    int pSize = ui->pointSize_sb->value();
+
+    if( (xAdata.count() != 0) && (yAdata.count() != 0))
+        addPoints(plot_, xAdata, yAdata, ui->pointsAClr->color(), pSize, aName);
+    if( (xBdata.count() != 0) && (yBdata.count() != 0))
+        addPoints(plot_, xBdata, yBdata, ui->pointsBClr->color(), pSize, bName);
+
+    plot_->graph(0)->rescaleAxes(true);
 
     //Добавление ошибок
     if(ui->dxAxis->isVisibleOnPlot())
@@ -279,7 +327,6 @@ void MainWindow::on_build_btn_clicked()
         addError(plot_, ui->dyAxis);
 
     //Обновление графика
-    plot_->graph(grNum)->rescaleAxes(true);
     plot_->axisRect()->setupFullAxesBox();
     plot_->replot();
 }
@@ -355,6 +402,8 @@ void MainWindow::setComboBoxes()
     ui->yAxis->setCurInd(32);
     ui->dxAxis->setCurInd(0);
     ui->dyAxis->setCurInd(31);
+
+    ui->pointSize_sb->setValue(3);
 }
 
 void MainWindow::on_hDelta_H_sldr_sliderMoved(int position)

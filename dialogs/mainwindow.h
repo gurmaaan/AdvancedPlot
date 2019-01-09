@@ -39,9 +39,7 @@ private slots:
     void on_angle_dial_sliderMoved(int position);
     void on_actionDebug_triggered();
     void setComboBoxes();
-
     void on_hDelta_H_sldr_sliderMoved(int position);
-
     void on_vDelta_H_sldr_sliderMoved(int position);
 
 private:
@@ -56,6 +54,7 @@ private:
     void connectAll();
     void setupWidgets();
 
+    QVector<double> getPlotData(QStandardItemModel *model, int colIndex, QString suffix);
     double calcDelta(int newAngle, double y11);
 
     QString kStr(AxisWidget *xA, AxisWidget *yA);
@@ -66,6 +65,7 @@ private:
     void setLineEq(double x1, double x2, double y1, double y2);
 
     void addError(QCustomPlot *plotVie, AxisWidget *axis);
+    void addPoints(QCustomPlot *plotVie, QVector<double> datax, QVector<double> datay, QColor clr, int size, QString name);
     void setupAxis(QCustomPlot *plotVie, AxisWidget *axis);
     void setupDelta(QSlider *slider, AxisWidget *axis);
 };

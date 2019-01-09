@@ -202,10 +202,9 @@ void BulkDialog::actionsActivating(const QBitArray &activeAct)
 
 QString BulkDialog::genPath(QString pathA, QString pathB, QString nameC)
 {
-    QString nameA = pathA.split("/").last();
-    QString dirA = pathA.left(pathA.length() - nameA.length());
-    QString nameB = pathB.split("/").last();
-    QString dirB = pathB.left(pathB.length() - nameB.length());
+    QString dirA = QFileInfo(pathA).absolutePath() + "/";
+    QString dirB = QFileInfo(pathB).absolutePath() + "/";
+
     QString pathC = "";
     if(dirA == dirB)
         pathC = dirA + nameC;
@@ -248,16 +247,6 @@ void BulkDialog::copyItems(QStandardItemModel *sourceModel, QStandardItemModel *
     {
         QString originalObjNameAtI = sourceModel->headerData(i, Qt::Vertical).toString();
         bool condition = onlyDuplicates ^ duplicates.contains(originalObjNameAtI);
-//        bool isDup
-
-//        if(onlyDuplicates)
-//        {
-//            condition = duplicates.contains(originalObjNameAtI);
-//        }
-//        else
-//        {
-//            condition = !(duplicates.contains(originalObjNameAtI));
-//        }
 
         originalObjNameAtI = originalObjNameAtI + suffix;
 

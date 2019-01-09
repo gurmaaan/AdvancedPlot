@@ -72,6 +72,7 @@ void MainWindow::connectAll()
             this, &MainWindow::scrollAndSelect);
     connect(ui->yAxis, &AxisWidget::currentIndexChanged,
             this, &MainWindow::scrollAndSelect);
+
     connect(ui->dxAxis, &AxisWidget::currentIndexChanged,
             this, &MainWindow::scrollAndSelect);
     connect(ui->dyAxis, &AxisWidget::currentIndexChanged,
@@ -95,15 +96,22 @@ void MainWindow::setupWidgets()
     cW_->setBtnVisible(false);
 
     //NOTE : включение / отключение дебага
-    ui->debug_btn->setVisible(false);
+    ui->debug_btn->setVisible(true);
 
     ui->xAxis->setT(AxisType::XAxis);
+    ui->xAxis->setVisibleOnPlotBtnVisible(false);
     ui->yAxis->setT(AxisType::YAxis);
+    ui->yAxis->setVisibleOnPlotBtnVisible(false);
+
     ui->dxAxis->setT(AxisType::dXAxis);
     ui->dxAxis->setColor(QColor(Qt::black));
     ui->dyAxis->setT(AxisType::dYAxis);
     ui->dyAxis->setColor(QColor(Qt::black));
-    ui->pointClr->setColor(QColor(Qt::red));
+
+    ui->pointsAClr->setColor(QColor(Qt::red));
+    ui->pointsAClr->setText("Цвет точек файла А:");
+    ui->pointsBClr->setColor(QColor(Qt::darkGreen));
+    ui->pointsBClr->setText("Цвет точек файла В:");
     ui->splitClr->setColor(QColor(Qt::blue));
 }
 
@@ -227,7 +235,7 @@ void MainWindow::setAxisModel(QStandardItemModel *m)
 
 void MainWindow::on_build_btn_clicked()
 {
-    //Активирование таба с графиком + установка в фолс линию разделения
+    //Активирование таба с графиком + установка в false линию разделения
     ui->tabWidget->setCurrentIndex(3);
     ui->split_gb->setChecked(false);
 
@@ -257,15 +265,18 @@ void MainWindow::on_build_btn_clicked()
     //Добавление основных точек
     plot_->addGraph();
     int grNum = plot_->graphCount() - 1;
-    plot_->graph(grNum)->setPen(QPen(ui->pointClr->color()));
+    plot_->graph(grNum)->setPen(QPen(ui->pointsAClr->color()));
     plot_->graph(grNum)->setLineStyle(QCPGraph::lsNone);
     plot_->graph(grNum)->setScatterStyle( QCPScatterStyle( QCPScatterStyle::ssDisc, ui->pointSize_sb->value() ) );
     plot_->graph(grNum)->setData(ui->xAxis->values(), ui->yAxis->values());
     plot_->graph(grNum)->setName(DEPENDANCE + ui->yAxis->name() + DEPOF + ui->xAxis->name() );
 
     //Добавление ошибок
-    addError(plot_, ui->dxAxis);
-    addError(plot_, ui->dyAxis);
+    if(ui->dxAxis->isVisibleOnPlot())
+        addError(plot_, ui->dxAxis);
+
+    if(ui->dyAxis->isVisibleOnPlot())
+        addError(plot_, ui->dyAxis);
 
     //Обновление графика
     plot_->graph(grNum)->rescaleAxes(true);

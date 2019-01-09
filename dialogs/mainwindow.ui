@@ -270,9 +270,9 @@
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="pointsClr_H_lyt">
+         <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="ColorButton" name="pointClr" native="true">
+           <widget class="ColorButton" name="pointsAClr" native="true">
             <property name="minimumSize">
              <size>
               <width>40</width>
@@ -293,6 +293,16 @@
              </size>
             </property>
            </spacer>
+          </item>
+          <item>
+           <widget class="ColorButton" name="pointsBClr" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>

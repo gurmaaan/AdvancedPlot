@@ -17,11 +17,10 @@ public:
     ~ColorButton();
 
     QColor color() const;
-    void setColor(const QColor &color);
 
 public slots:
     void setText(QString text);
-
+    void setColor(const QColor &color);
 
 private slots:
     void on_toolButton_clicked();

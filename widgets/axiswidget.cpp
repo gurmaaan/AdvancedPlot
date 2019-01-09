@@ -15,12 +15,27 @@ AxisWidget::~AxisWidget()
 
 void AxisWidget::setName(QString name)
 {
-    ui->axis_lbl->setText(name);
+    ui->axis_gb->setTitle(name);
 }
 
 void AxisWidget::setClrBtnVisible(bool state)
 {
     ui->clr_btn->setVisible(state);
+}
+
+void AxisWidget::setVisibleOnPlotBtnVisible(bool state)
+{
+    ui->axis_gb->setCheckable(state);
+}
+
+bool AxisWidget::isVisibleOnPlot()
+{
+    if(ui->axis_gb->isCheckable())
+        return ui->axis_gb->isChecked();
+    else
+    {
+        return false;
+    }
 }
 
 void AxisWidget::on_axis_cb_currentIndexChanged(int index)
@@ -161,4 +176,10 @@ void AxisWidget::setValues(const QVector<double> &values)
     double max = *std::max_element(values.constBegin(), values.constEnd());
     setMax(max);
     setAv((min + max) / 2);
+}
+
+void AxisWidget::on_axis_gb_clicked(bool checked)
+{
+    ui->clr_btn->setEnabled(checked);
+    emit visibleChanged(checked);
 }

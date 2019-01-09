@@ -71,7 +71,6 @@ private:
 
     QStringList duplicatedNames_;
     QStringList findDuplicatedObjectNames(CSVFile aF, CSVFile bF);
-    bool oneOfDuplicated(QString test, QStringList duplicates);
 
     QBitArray activeAct_;
     void actionsActivating(const QBitArray &activeAct);

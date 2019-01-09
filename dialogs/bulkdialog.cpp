@@ -184,20 +184,6 @@ QStringList BulkDialog::findDuplicatedObjectNames(CSVFile aF, CSVFile bF)
     return duplicatesList;
 }
 
-bool BulkDialog::oneOfDuplicated(QString test, QStringList duplicates)
-{
-    bool testIsDup = false;
-    for(QString dup : duplicates)
-    {
-        if(test == dup)
-        {
-            testIsDup = true;
-            break;
-        }
-    }
-    return testIsDup;
-}
-
 bool BulkDialog::checkFIlesNotEmpty(CSVFile aF, CSVFile bF)
 {
     bool notEmpty = !((aF.model()->rowCount() == 0) || (bF.model()->rowCount() == 0));
@@ -258,22 +244,24 @@ QStandardItemModel *BulkDialog::genEmptyModelWithHeaders()
 
 void BulkDialog::copyItems(QStandardItemModel *sourceModel, QStandardItemModel *targetModel, QStringList duplicates, QString suffix, bool onlyDuplicates)
 {
-    //TODO доработать
     for (int i = 0; i < sourceModel->rowCount(); i++)
     {
         QString originalObjNameAtI = sourceModel->headerData(i, Qt::Vertical).toString();
-        bool condition;
-        if(onlyDuplicates)
-        {
-            condition = oneOfDuplicated(originalObjNameAtI, duplicates);
-            originalObjNameAtI = originalObjNameAtI + suffix;
-        }
-        else
-        {
-            condition = !oneOfDuplicated(originalObjNameAtI, duplicates);
-        }
+        bool condition = onlyDuplicates ^ duplicates.contains(originalObjNameAtI);
+//        bool isDup
 
-        if(!condition)
+//        if(onlyDuplicates)
+//        {
+//            condition = duplicates.contains(originalObjNameAtI);
+//        }
+//        else
+//        {
+//            condition = !(duplicates.contains(originalObjNameAtI));
+//        }
+
+        originalObjNameAtI = originalObjNameAtI + suffix;
+
+        if(condition)
             continue;
         else
         {

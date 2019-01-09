@@ -27,7 +27,11 @@ public:
     ~AxisWidget();
 
     void setName(QString name);
+
     void setClrBtnVisible(bool state);
+    void setVisibleOnPlotBtnVisible(bool state);
+    bool isVisibleOnPlot();
+
     QVector<double> values() const;
     void setValues(const QVector<double> &values);
 
@@ -52,12 +56,15 @@ public:
 
 signals:
     void currentIndexChanged(int index);
+    void visibleChanged(bool state);
+
 public slots:
     void setModel(QStandardItemModel *model);
     void on_axis_cb_currentIndexChanged(int index);
 
 private slots:
 
+    void on_axis_gb_clicked(bool checked);
 
 private:
     Ui::AxisWidget *ui;

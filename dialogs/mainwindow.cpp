@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     cW_ = ui->fileC_widget;
 
     plot_ = ui->plot_view;
+    plot_->setInteractions(QCP::iRangeZoom | QCP::iRangeDrag);
     setupWidgets();
     connectAll();
     showMaximized();
@@ -21,6 +22,16 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::mouseWheel()
+{
+    plot_->axisRect()->setRangeZoom(Qt::Horizontal | Qt::Vertical);
+}
+
+void MainWindow::mousePress()
+{
+    plot_->axisRect()->setRangeDrag(Qt::Horizontal | Qt::Vertical);
 }
 
 void MainWindow::runCgen(bool status)
@@ -84,6 +95,11 @@ void MainWindow::connectAll()
             this, &MainWindow::runCgen);
     connect(bW_, &FileWidget::parsingDone,
             this, &MainWindow::runCgen);
+
+    connect(plot_,  &QCustomPlot::mouseWheel,
+            this, &MainWindow::mouseWheel);
+    connect(plot_, &QCustomPlot::mouseMove,
+            this, &MainWindow::mousePress);
 }
 
 void MainWindow::setupWidgets()
@@ -108,9 +124,9 @@ void MainWindow::setupWidgets()
     ui->dyAxis->setColor(QColor(Qt::black));
 
     ui->pointsAClr->setColor(QColor(Qt::red));
-    ui->pointsAClr->setText("Цвет точек файла А:");
+    ui->pointsAClr->setText("А:");
     ui->pointsBClr->setColor(QColor(Qt::darkGreen));
-    ui->pointsBClr->setText("Цвет точек файла В:");
+    ui->pointsBClr->setText("В:");
     ui->splitClr->setColor(QColor(Qt::blue));
 }
 
@@ -201,7 +217,7 @@ void MainWindow::setLineEq(double x1, double x2, double y1, double y2)
     ui->lineEq_b->setText(bStr(x1, x2, y1, y2));
 }
 
-void MainWindow::addError(QCustomPlot *plotVie, AxisWidget *axis)
+void MainWindow::addError(QCustomPlot *plotVie, AxisWidget *axis, QVector<double> errorData)
 {
     QCPErrorBars *errorBar = new QCPErrorBars(plotVie->xAxis, plotVie->yAxis);
     QCPErrorBars::ErrorType et = ( axis == ui->dxAxis) ? QCPErrorBars::ErrorType::etKeyError
@@ -211,7 +227,7 @@ void MainWindow::addError(QCustomPlot *plotVie, AxisWidget *axis)
     errorBar->setAntialiased(false);
     errorBar->setDataPlottable( plotVie->graph(plotVie->graphCount() - 1) );
     errorBar->setPen(QPen(axis->color()));
-    errorBar->setData(axis->values());
+    errorBar->setData(errorData);
 }
 
 void MainWindow::addPoints(QCustomPlot *plotVie, QVector<double> datax, QVector<double> datay, QColor clr, int size, QString name)
@@ -307,25 +323,35 @@ void MainWindow::on_build_btn_clicked()
     QVector<double> yAdata = getPlotData(cModel, ui->yAxis->curentIndex(), "A");
     QVector<double> xBdata = getPlotData(cModel, ui->xAxis->curentIndex(), "B");
     QVector<double> yBdata = getPlotData(cModel, ui->yAxis->curentIndex(), "B");
+    QVector<double> dxAdata = getPlotData(cModel, ui->dxAxis->curentIndex(), "A");
+    QVector<double> dyAdata = getPlotData(cModel, ui->dyAxis->curentIndex(), "A");
+    QVector<double> dxBdata = getPlotData(cModel, ui->dxAxis->curentIndex(), "B");
+    QVector<double> dyBdata = getPlotData(cModel, ui->dyAxis->curentIndex(), "B");
 
     QString aName = DEPENDANCE + ui->yAxis->name() + DEPOF + ui->xAxis->name() + " для файла А";
     QString bName = DEPENDANCE + ui->yAxis->name() + DEPOF + ui->xAxis->name() + " для файла B";
     int pSize = ui->pointSize_sb->value();
 
+    bool dxVis = ui->dxAxis->isVisibleOnPlot();
+    bool dyVis = ui->dyAxis->isVisibleOnPlot();
     if( (xAdata.count() != 0) && (yAdata.count() != 0))
+    {
         addPoints(plot_, xAdata, yAdata, ui->pointsAClr->color(), pSize, aName);
+        if(dxVis)
+            addError(plot_, ui->dxAxis, dxAdata);
+        if(dyVis)
+            addError(plot_, ui->dyAxis, dyAdata);
+    }
     if( (xBdata.count() != 0) && (yBdata.count() != 0))
+    {
         addPoints(plot_, xBdata, yBdata, ui->pointsBClr->color(), pSize, bName);
+        if(dxVis)
+            addError(plot_, ui->dxAxis, dxBdata);
+        if(dyVis)
+            addError(plot_, ui->dyAxis, dyBdata);
+    }
 
-    plot_->graph(0)->rescaleAxes(true);
-
-    //Добавление ошибок
-    if(ui->dxAxis->isVisibleOnPlot())
-        addError(plot_, ui->dxAxis);
-
-    if(ui->dyAxis->isVisibleOnPlot())
-        addError(plot_, ui->dyAxis);
-
+    //plot_->graph(0)->rescaleAxes(true);
     //Обновление графика
     plot_->axisRect()->setupFullAxesBox();
     plot_->replot();
@@ -394,14 +420,20 @@ void MainWindow::on_actionDebug_triggered()
     aW_->processFile(A_FILE_PATH);
     bW_->processFile(B_FILE_PATH);
     QTimer::singleShot(2500, this, SLOT( setComboBoxes() ));
+
+//    QStringList dscrList = aW_->csv().descriptorsNames();
+//    for(int i = 0; i < dscrList.count(); i++)
+//    {
+//        qDebug() << i << " : " << dscrList.at(i);
+//    }
 }
 
 void MainWindow::setComboBoxes()
 {
-    ui->xAxis->setCurInd(1);
-    ui->yAxis->setCurInd(32);
-    ui->dxAxis->setCurInd(0);
-    ui->dyAxis->setCurInd(31);
+    ui->xAxis->setCurInd(16);
+    ui->yAxis->setCurInd(47);
+    ui->dxAxis->setCurInd(24);
+    ui->dyAxis->setCurInd(55);
 
     ui->pointSize_sb->setValue(3);
 }

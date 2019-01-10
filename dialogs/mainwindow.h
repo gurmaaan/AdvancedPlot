@@ -41,6 +41,9 @@ private slots:
     void setComboBoxes();
     void on_hDelta_H_sldr_sliderMoved(int position);
     void on_vDelta_H_sldr_sliderMoved(int position);
+    //
+    void mouseWheel();
+    void mousePress();
 
 private:
     Ui::MainWindow *ui;
@@ -64,7 +67,7 @@ private:
     void setLineEq(AxisWidget *xA, AxisWidget *yA);
     void setLineEq(double x1, double x2, double y1, double y2);
 
-    void addError(QCustomPlot *plotVie, AxisWidget *axis);
+    void addError(QCustomPlot *plotVie, AxisWidget *axis, QVector<double> errorData);
     void addPoints(QCustomPlot *plotVie, QVector<double> datax, QVector<double> datay, QColor clr, int size, QString name);
     void setupAxis(QCustomPlot *plotVie, AxisWidget *axis);
     void setupDelta(QSlider *slider, AxisWidget *axis);

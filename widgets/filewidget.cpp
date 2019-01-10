@@ -18,17 +18,23 @@ void FileWidget::on_file_btn_clicked()
 {
     QString openLocation = requiredPath(QDir::current(), DATA_LOCATION, QStandardPaths::DocumentsLocation);
     QString filePath = QFileDialog::getOpenFileName(nullptr, "Выберите CSV файл", openLocation, FILE_TYPE);
-    setPath(filePath);
+    if(QFileInfo(filePath).isReadable())
+    {
+        setPath(filePath);
 
-    CSVFile csvFile(filePath);
-    setCsv(csvFile);
+        CSVFile csvFile(filePath);
+        setCsv(csvFile);
 
-    setupSB(ui->descrCnt_sb, csvFile.model()->columnCount());
-    setupSB(ui->objctsCnt_sb, csvFile.model()->rowCount());
-    ui->fCfR_le->setText(csvFile.getFRfCstr());
+        setupSB(ui->descrCnt_sb, csvFile.model()->columnCount());
+        setupSB(ui->objctsCnt_sb, csvFile.model()->rowCount());
+        ui->fCfR_le->setText(csvFile.getFRfCstr());
 
-    emit modelChanged(csvFile.model());
-    setParsingState(true);
+        emit modelChanged(csvFile.model());
+        setParsingState(true);
+    }
+    else {
+        QMessageBox::critical(nullptr, QGuiApplication::applicationDisplayName(), QString("Не могу открыть файл %1. Пожалуйста попробуйте еще раз.").arg(filePath));
+    }
 }
 
 bool FileWidget::parsingState() const

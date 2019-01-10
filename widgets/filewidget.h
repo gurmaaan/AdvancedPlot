@@ -6,6 +6,9 @@
 #include <QStandardPaths>
 #include <QDir>
 #include <QSpinBox>
+#include <QGuiApplication>
+#include <QMessageBox>
+//
 #include <csvfile.h>
 
 namespace Ui {

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>947</width>
-    <height>1427</height>
+    <width>1114</width>
+    <height>1034</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -98,6 +98,9 @@
      <height>516</height>
     </size>
    </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
    <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
@@ -185,11 +188,8 @@
    <property name="enabled">
     <bool>false</bool>
    </property>
-   <property name="minimumSize">
-    <size>
-     <width>400</width>
-     <height>505</height>
-    </size>
+   <property name="autoFillBackground">
+    <bool>true</bool>
    </property>
    <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
@@ -702,6 +702,17 @@
      </item>
     </layout>
    </widget>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
   </widget>
   <action name="actionDebug">
    <property name="text">

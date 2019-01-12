@@ -1,0 +1,28 @@
+.gitignore - Файл исключений системы контроля версий Git
+AdvancedPlot.pro - Файл с мета-данными проекта Qt Creator
+csvfile.cpp - класс обработки файла CSV
+csvfile.h
+\data\... - директория с тестовыми данными для отображения
+\dialogs\ - директория классов и разметок интерфейса
+	\dialogs\bulkdialog.cpp - класс реализующий утилиту сравнения файлов
+	\dialogs\bulkdialog.h
+	\dialogs\bulkdialog.ui
+	\dialogs\mainwindow.cpp - класс главного окна программы
+	\dialogs\mainwindow.h
+	\dialogs\mainwindow.ui
+\icons\... - директория с иконками программы
+main.cpp - точка входа в программу
+src.qrc - файл графических и других ресурсов используемых в программе
+static.h - файл строковых контсант 
+\widgets\ - директория с классами и разметками интерфейса виджетов приложения 
+	\widgets\axiswidget.cpp - класс виджета настройки оси
+	\widgets\axiswidget.h
+	\widgets\axiswidget.ui
+	\widgets\colorbutton.cpp - класс виджета выбора цвета
+	\widgets\colorbutton.h 
+	\widgets\colorbutton.ui
+	\widgets\filewidget.cpp - класс виджета выбора файла 
+	\widgets\filewidget.h
+	\widgets\filewidget.ui
+	\widgets\qcustomplot.cpp - сторонняя библиотека построения графиков
+	\widgets\qcustomplot.h

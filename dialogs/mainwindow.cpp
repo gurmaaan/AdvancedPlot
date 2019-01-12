@@ -417,15 +417,10 @@ void MainWindow::on_angle_dial_sliderMoved(int position)
 
 void MainWindow::on_actionDebug_triggered()
 {
-    aW_->processFile(A_FILE_PATH);
-    bW_->processFile(B_FILE_PATH);
-    QTimer::singleShot(2500, this, SLOT( setComboBoxes() ));
-
-//    QStringList dscrList = aW_->csv().descriptorsNames();
-//    for(int i = 0; i < dscrList.count(); i++)
-//    {
-//        qDebug() << i << " : " << dscrList.at(i);
-//    }
+//    aW_->processFile(A_FILE_PATH);
+//    bW_->processFile(B_FILE_PATH);
+//    QTimer::singleShot(2500, this, SLOT( setComboBoxes() ));
+    setComboBoxes();
 }
 
 void MainWindow::setComboBoxes()
@@ -434,8 +429,8 @@ void MainWindow::setComboBoxes()
     ui->yAxis->setCurInd(47);
     ui->dxAxis->setCurInd(24);
     ui->dyAxis->setCurInd(55);
-
-    ui->pointSize_sb->setValue(3);
+    ui->pointSize_H_sld->setValue(5);
+    ui->pointSize_sb->setValue(5);
 }
 
 void MainWindow::on_hDelta_H_sldr_sliderMoved(int position)

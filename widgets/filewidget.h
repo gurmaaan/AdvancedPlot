@@ -15,6 +15,9 @@ namespace Ui {
 class FileWidget;
 }
 
+/**
+ * @brief      Class for file widget.
+ */
 class FileWidget : public QGroupBox
 {
     Q_OBJECT
@@ -23,12 +26,27 @@ public:
     explicit FileWidget(QWidget *parent = nullptr);
     ~FileWidget();
 
+    /**
+     * @brief      { function_description }
+     *
+     * @return     { description_of_the_return_value }
+     */
     CSVFile csv() const;
     void setCsv(const CSVFile &csv);
 
+    /**
+     * @brief      { function_description }
+     *
+     * @return     { description_of_the_return_value }
+     */
     bool parsingState() const;
     void setParsingState(bool parsingState);
 
+    /**
+     * @brief      { function_description }
+     *
+     * @return     { description_of_the_return_value }
+     */
     QString fileName();
 
 public slots:

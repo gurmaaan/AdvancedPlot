@@ -16,6 +16,9 @@ namespace Ui {
 class BulkDialog;
 }
 
+/**
+ * @brief      Class for bulk dialog.
+ */
 class BulkDialog : public QDialog
 {
     Q_OBJECT
@@ -24,17 +27,43 @@ public:
     explicit BulkDialog(QWidget *parent = nullptr);
     ~BulkDialog();
 
+    /**
+     * @brief      Sets the file a.
+     *
+     * @param[in]  aF    A f
+     */
     void setFileA(const CSVFile &aF);
     void setFileB(const CSVFile &bF);
 
+    /**
+     * @brief      { function_description }
+     *
+     * @return     { description_of_the_return_value }
+     */
     QStringList duplicatedNames() const;
     void setDuplicatedNames(const QStringList &duplicatedNames);
 
+    /**
+     * @brief      { function_description }
+     *
+     * @param[in]  aF    A f
+     * @param[in]  bF    { parameter_description }
+     */
     void processFiles(const CSVFile &aF,const CSVFile &bF);
 
+    /**
+     * @brief      Sets a model.
+     *
+     * @param      aModel  A model
+     */
     void setAModel(QStandardItemModel *aModel);
     void setBModel(QStandardItemModel *bModel);
 
+    /**
+     * @brief      Sets the c path.
+     *
+     * @param[in]  cPath  The path
+     */
     void setCPath(const QString &cPath);
 
 public slots:
@@ -66,6 +95,14 @@ private:
     bool duplicatesFound_;
     bool filesNotEmpty_;
 
+    /**
+     * @brief      { function_description }
+     *
+     * @param[in]  aF    A f
+     * @param[in]  bF    { parameter_description }
+     *
+     * @return     { description_of_the_return_value }
+     */
     bool compareDescriptors(CSVFile aF, CSVFile bF);
     bool checkFIlesNotEmpty(CSVFile aF, CSVFile bF);
 
@@ -80,6 +117,11 @@ private:
     QStandardItemModel *bModel_;
     QString cPath_;
 
+    /**
+     * @brief      { function_description }
+     *
+     * @return     { description_of_the_return_value }
+     */
     QStandardItemModel *genEmptyModelWithHeaders();
     void copyItems(QStandardItemModel *sourceModel, QStandardItemModel *targetModel, QStringList duplicates,QString suffix, bool onlyDuplicates);
 };

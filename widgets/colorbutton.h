@@ -8,6 +8,9 @@ namespace Ui {
 class ColorButton;
 }
 
+/**
+ * @brief      Class for color button.
+ */
 class ColorButton : public QWidget
 {
     Q_OBJECT
@@ -16,6 +19,11 @@ public:
     explicit ColorButton(QWidget *parent = nullptr);
     ~ColorButton();
 
+    /**
+     * @brief      { function_description }
+     *
+     * @return     { description_of_the_return_value }
+     */
     QColor color() const;
 
 public slots:
